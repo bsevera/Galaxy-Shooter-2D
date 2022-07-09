@@ -4,43 +4,58 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    //public or private variable
-    //if private only this script knows that it exists
-    //four common data types in c#: int, float, bool, string
-    //every variable has a name
-    //option value assigned
+    [SerializeField]
+    private float _speed = 5f;
 
     [SerializeField]
+    private GameObject _laserPrefab;
 
-    private float _speed = 5f;
+    [SerializeField]
+    private float _fireRate = 0.15f;
+
+    //cool down system for limiting how quickly the player can fire
+    private float _canFire = -1f;
 
     // Start is called before the first frame update
     void Start()
     {
         //take the current position and assign it a start position of 0, 0, 0 
         transform.position = new Vector3(0, 0, 0);
-
     }
-
 
     // Update is called once per frame
-    private void Update()
-    {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+    //private void Update()
+    //{
+    //    float horizontalInput = Input.GetAxis("Horizontal");
+    //    float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        transform.Translate(direction * _speed * Time.deltaTime);
+    //    Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
+    //    transform.Translate(direction * _speed * Time.deltaTime);
+
+    //}
+
+    void Update()
+    {
+
+        SetSpeed();
+        CalculateMovement();
+
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+        {
+            FireLaser();
+        }
 
     }
 
-    //void Update()
-    //{
+    void FireLaser()
+    {
+        _canFire = Time.time + _fireRate;
 
-    //    SetSpeed();
-    //    CalculateMovement();
+        //laser needs to be spawned .8f above the player object
+        Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + .8f, 0);
+        Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
 
-    //}
+    }
 
     void SetSpeed()
     {
