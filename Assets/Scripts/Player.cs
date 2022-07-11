@@ -16,6 +16,9 @@ public class Player : MonoBehaviour
     //cool down system for limiting how quickly the player can fire
     private float _canFire = -1f;
 
+    [SerializeField]
+    private int _lives = 3;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,16 +27,6 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    //private void Update()
-    //{
-    //    float horizontalInput = Input.GetAxis("Horizontal");
-    //    float verticalInput = Input.GetAxis("Vertical");
-
-    //    Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-    //    transform.Translate(direction * _speed * Time.deltaTime);
-
-    //}
-
     void Update()
     {
 
@@ -45,6 +38,17 @@ public class Player : MonoBehaviour
             FireLaser();
         }
 
+    }
+
+    public void Damage()
+    {
+        _lives -= 1;
+
+        //check if dead, if so, destroy us
+        if (_lives < 1)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     void FireLaser()
@@ -63,16 +67,14 @@ public class Player : MonoBehaviour
         {
             if (_speed < 11.0f)
             {
-                _speed += 1.0f;
-                Debug.Log("Speed = " + _speed);
+                _speed += 1.0f;                
             }
         }
         else if (Input.GetKeyDown(KeyCode.Minus))
         {
             if (_speed > 0.0f)
             {
-                _speed -= 1.0f;
-                Debug.Log("Speed = " + _speed);
+                _speed -= 1.0f;                
             }
         }
     }
@@ -85,46 +87,25 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
         transform.Translate(direction * _speed * Time.deltaTime);
 
-        //constrain the object to not move past 9 and -9 on the horizontal
-        //constrain the object to not move past 0 and -3 on the vertical
-        if (transform.position.x >= 9)
+        //constrain the object to not move past 12 and -12 on the horizontal
+        //constrain the object to not move past 0 and -4 on the vertical
+        if (transform.position.x >= 12)
         {
-            transform.position = new Vector3(9, transform.position.y, 0);
+            transform.position = new Vector3(12, transform.position.y, 0);
         }
-        else if (transform.position.x <= -9)
+        else if (transform.position.x <= -12)
         {
-            transform.position = new Vector3(-9, transform.position.y, 0);
+            transform.position = new Vector3(-12, transform.position.y, 0);
         }
 
         if (transform.position.y >= 0)
         {
             transform.position = new Vector3(transform.position.x, 0, 0);
         }
-        else if (transform.position.y <= -3)
+        else if (transform.position.y <= -4)
         {
-            transform.position = new Vector3(transform.position.x, -3, 0);
+            transform.position = new Vector3(transform.position.x, -4, 0);
         }
-
-
-        //bonus - wrap the object so if you go beyond the bounds on the right, it appears on the left and vice versa
-        //bonus - wrap the object so if you go beyond the vertical bounds on the top, it appears on the bottom and vice versa
-        //if (transform.position.x >= 9)
-        //{
-        //    transform.position = new Vector3(-9, transform.position.y, 0);
-        //}
-        //else if (transform.position.x <= -9)
-        //{
-        //    transform.position = new Vector3(9, transform.position.y, 0);
-        //}
-
-        //if (transform.position.y > 0)
-        //{
-        //    transform.position = new Vector3(transform.position.x, -3, 0);
-        //}
-        //else if (transform.position.y <= -3)
-        //{
-        //    transform.position = new Vector3(transform.position.x, 0, 0);
-        //}
 
     }
 }
