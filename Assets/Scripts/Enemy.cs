@@ -9,8 +9,8 @@ public class Enemy : MonoBehaviour
 
     private float _bottomOfScreen = -5.4f;
     private float _topOfScreen = 6.5f;
-    private float _minX = -11.0f;
-    private float _maxX = 11.0f;
+    private float _minX = -9.0f;
+    private float _maxX = 9.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +42,7 @@ public class Enemy : MonoBehaviour
         transform.position = new Vector3(randomX, _topOfScreen, 0);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
         {
@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
 
             //destroy us
             Destroy(this.gameObject);
-        }                
+        }
     }
 
 }

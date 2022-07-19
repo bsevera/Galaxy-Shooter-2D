@@ -19,11 +19,20 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _lives = 3;
 
+    private SpawnManager spawnManager;
+
     // Start is called before the first frame update
     void Start()
     {
         //take the current position and assign it a start position of 0, 0, 0 
         transform.position = new Vector3(0, 0, 0);
+
+        spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+
+        if (spawnManager == null)
+        {
+            Debug.LogError("spawnManager is null!");
+        }
     }
 
     // Update is called once per frame
@@ -46,7 +55,19 @@ public class Player : MonoBehaviour
 
         //check if dead, if so, destroy us
         if (_lives < 1)
-        {
+        {            
+            //get spawn_manager object and tell it the player is dead to stop enemies from spawning
+            
+            if (spawnManager != null)
+            {
+                spawnManager.OnPlayerDeath();
+            }
+            else
+            {
+                Debug.Log("spawnmanager = null");
+            }
+
+            //destroy the player
             Destroy(this.gameObject);
         }
     }
@@ -56,7 +77,7 @@ public class Player : MonoBehaviour
         _canFire = Time.time + _fireRate;
 
         //laser needs to be spawned .8f above the player object
-        Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + .8f, 0);
+        Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
         Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
 
     }
@@ -87,15 +108,15 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
         transform.Translate(direction * _speed * Time.deltaTime);
 
-        //constrain the object to not move past 12 and -12 on the horizontal
+        //constrain the object to not move past 8 and -8 on the horizontal
         //constrain the object to not move past 0 and -4 on the vertical
-        if (transform.position.x >= 12)
+        if (transform.position.x >= 8)
         {
-            transform.position = new Vector3(12, transform.position.y, 0);
+            transform.position = new Vector3(8, transform.position.y, 0);
         }
-        else if (transform.position.x <= -12)
+        else if (transform.position.x <= -8)
         {
-            transform.position = new Vector3(-12, transform.position.y, 0);
+            transform.position = new Vector3(-8, transform.position.y, 0);
         }
 
         if (transform.position.y >= 0)
