@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Powerup : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 4.0f;
+    private float _speed = 3.0f;
 
     private float _bottomOfScreen = -5.4f;
     private float _topOfScreen = 6.5f;
@@ -17,12 +17,12 @@ public class Enemy : MonoBehaviour
     {
         //position object at the top of the screen
         SetStartPosition();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
         if (transform.position.y > _bottomOfScreen)
         {
             //move down 4 meters per second
@@ -30,9 +30,10 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            //if object moves off of the bottom of screen, respawn it at the top with a new random x position
-            SetStartPosition();
+            //if object moves off of the bottom of screen, destroy it
+            Destroy(this.gameObject);
         }
+
     }
 
     private void SetStartPosition()
@@ -41,40 +42,22 @@ public class Enemy : MonoBehaviour
 
         transform.position = new Vector3(randomX, _topOfScreen, 0);
     }
-    
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
         {
-            //get player object
             Player player = other.transform.GetComponent<Player>();
 
             //damage the player
             if (player != null)
             {
-                player.Damage();
+                player.TripleShotActive();
             }
 
             //destroy us
             Destroy(this.gameObject);
-        }
 
-        if (other.tag == "Laser")
-        {
-            //destroy laser
-            if (other.transform.parent != null)
-            {
-                //triple shot - destroy parent
-                Destroy(other.transform.parent.gameObject);
-            }
-            else
-            {
-                Destroy(other.gameObject);
-            }
-
-            //destroy us
-            Destroy(this.gameObject);
         }
     }
-
 }

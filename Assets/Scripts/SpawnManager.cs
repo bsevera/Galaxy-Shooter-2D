@@ -6,6 +6,16 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject _enemyPrefab;
+
+    [SerializeField]
+    private float _enemySpawnRate = 5.0f;
+
+    [SerializeField]
+    private GameObject _tripleShotPowerupPrefab;
+
+    //[SerializeField]
+    private float _powerupSpawnRate;
+
     [SerializeField]
     private GameObject _enemyContainer;
 
@@ -14,14 +24,8 @@ public class SpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(SpawnRoutine());
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        StartCoroutine(SpawnEnemyRoutine());
+        StartCoroutine(SpawnPowerupRoutine());
     }
 
     public void OnPlayerDeath()
@@ -29,22 +33,7 @@ public class SpawnManager : MonoBehaviour
         _stopSpawning = true;
     }
 
-
-    IEnumerator SpawnEnemyObject()
-    {
-        while (true)
-        {
-            //instantiate enemy object
-            Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
-            GameObject newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
-
-            newEnemy.transform.parent = _enemyContainer.transform;
-
-            yield return new WaitForSeconds(5.0f);
-        }
-    }
-
-    IEnumerator SpawnRoutine()
+    IEnumerator SpawnEnemyRoutine()
     {
         while (_stopSpawning == false)
         {
@@ -55,8 +44,21 @@ public class SpawnManager : MonoBehaviour
             newEnemy.transform.parent = _enemyContainer.transform;
 
             //wait for 5 seconds
-            yield return new WaitForSeconds(5.0f);
+            yield return new WaitForSeconds(_enemySpawnRate);
 
+        }
+    }
+
+    IEnumerator SpawnPowerupRoutine()
+    {
+        while (_stopSpawning == false)
+        {
+            Vector3 powerUpStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
+            GameObject newPowerup = Instantiate(_tripleShotPowerupPrefab, powerUpStartingPosition, Quaternion.identity);
+
+            _powerupSpawnRate = Random.Range(3.0f, 7.0f);
+            
+            yield return new WaitForSeconds(_powerupSpawnRate);
         }
     }
 }

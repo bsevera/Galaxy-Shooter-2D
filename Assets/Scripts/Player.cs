@@ -11,6 +11,9 @@ public class Player : MonoBehaviour
     private GameObject _laserPrefab;
 
     [SerializeField]
+    private GameObject _tripleShotPrefab;
+
+    [SerializeField]
     private float _fireRate = 0.15f;
 
     //cool down system for limiting how quickly the player can fire
@@ -19,7 +22,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _lives = 3;
 
-    private SpawnManager spawnManager;
+    [SerializeField]
+    private bool _isTripleShotActive = false;
+
+    [SerializeField]
+    private float _tripleShotActiveLengthOfTime = 5.0f;
+    
+
+    private SpawnManager _spawnManager;
 
     // Start is called before the first frame update
     void Start()
@@ -27,9 +37,9 @@ public class Player : MonoBehaviour
         //take the current position and assign it a start position of 0, 0, 0 
         transform.position = new Vector3(0, 0, 0);
 
-        spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
 
-        if (spawnManager == null)
+        if (_spawnManager == null)
         {
             Debug.LogError("spawnManager is null!");
         }
@@ -49,6 +59,12 @@ public class Player : MonoBehaviour
 
     }
 
+    public void TripleShotActive()
+    {        
+        _isTripleShotActive = true;
+        StartCoroutine(PowerDownTripleShot());
+    }
+
     public void Damage()
     {
         _lives -= 1;
@@ -58,9 +74,9 @@ public class Player : MonoBehaviour
         {            
             //get spawn_manager object and tell it the player is dead to stop enemies from spawning
             
-            if (spawnManager != null)
+            if (_spawnManager != null)
             {
-                spawnManager.OnPlayerDeath();
+                _spawnManager.OnPlayerDeath();
             }
             else
             {
@@ -76,9 +92,16 @@ public class Player : MonoBehaviour
     {
         _canFire = Time.time + _fireRate;
 
-        //laser needs to be spawned .8f above the player object
-        Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
-        Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
+        if (_isTripleShotActive)
+        {
+            Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            //laser needs to be spawned .8f above the player object
+            Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
+            Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
+        }
 
     }
 
@@ -127,6 +150,14 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, -4, 0);
         }
+
+    }
+
+    IEnumerator PowerDownTripleShot()
+    {
+        yield return new WaitForSeconds(_tripleShotActiveLengthOfTime);
+       
+        _isTripleShotActive = false;                        
 
     }
 }
