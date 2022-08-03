@@ -12,6 +12,14 @@ public class Powerup : MonoBehaviour
     private float _minX = -9.0f;
     private float _maxX = 9.0f;
 
+    //ID for powerups
+    //0 = triple shot
+    //1 = speed
+    //2 = shields
+
+    [SerializeField]
+    private int powerupID;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,13 +27,19 @@ public class Powerup : MonoBehaviour
         SetStartPosition();
 
     }
+    private void SetStartPosition()
+    {
+        float randomX = Random.Range(_minX, _maxX);
+
+        transform.position = new Vector3(randomX, _topOfScreen, 0);
+    }
 
     // Update is called once per frame
     void Update()
     {
         if (transform.position.y > _bottomOfScreen)
         {
-            //move down 4 meters per second
+            //move the object            
             transform.Translate(Vector3.down * _speed * Time.deltaTime);
         }
         else
@@ -33,14 +47,6 @@ public class Powerup : MonoBehaviour
             //if object moves off of the bottom of screen, destroy it
             Destroy(this.gameObject);
         }
-
-    }
-
-    private void SetStartPosition()
-    {
-        float randomX = Random.Range(_minX, _maxX);
-
-        transform.position = new Vector3(randomX, _topOfScreen, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -52,7 +58,21 @@ public class Powerup : MonoBehaviour
             //damage the player
             if (player != null)
             {
-                player.TripleShotActive();
+                switch (powerupID)
+                {
+                    case 0:
+                        player.TripleShotActive();
+                        break;
+                    case 1:
+                        player.SpeedBoostActive();
+                        break;
+                    case 2:
+                        player.ShieldActive();
+                        break;
+                    default:
+                        Debug.Log("Unknown value");
+                        break;
+                }
             }
 
             //destroy us
