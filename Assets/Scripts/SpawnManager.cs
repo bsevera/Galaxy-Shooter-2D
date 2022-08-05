@@ -10,12 +10,6 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private float _enemySpawnRate = 5.0f;
 
-    [SerializeField]
-    private GameObject _tripleShotPowerupPrefab;
-
-    [SerializeField]
-    private GameObject _speedPowerupPrefab;
-
     //[SerializeField]
     private float _powerupSpawnRate;
 
@@ -63,12 +57,12 @@ public class SpawnManager : MonoBehaviour
 
         while (_stopSpawning == false)
         {
+            //create a wider range of numbers, so there is more variety in the powerups displayed
             randomValue = Random.Range(0, powerups.Length * 100);
-            powerUpToSpawn = randomValue % 2;
+            powerUpToSpawn = randomValue % powerups.Length;
 
             Vector3 powerUpStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
-            GameObject newPowerup = Instantiate(powerups[powerUpToSpawn], powerUpStartingPosition, Quaternion.identity);
-            //GameObject newPowerup = Instantiate(_tripleShotPowerupPrefab, powerUpStartingPosition, Quaternion.identity);
+            GameObject newPowerup = Instantiate(powerups[powerUpToSpawn], powerUpStartingPosition, Quaternion.identity);            
 
             _powerupSpawnRate = Random.Range(3.0f, 7.0f);
             

@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     private bool _isSpeedBoostActive = false;
 
     [SerializeField]
-    private bool _IsShieldActive = false;
+    private bool _IsShieldsActive = false;
 
     [SerializeField]
     private float _fireRate = 0.15f;
@@ -40,9 +40,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _speedActiveLengthOfTime = 5.0f;
 
-    [SerializeField]
-    private float _speedPowerupSpeed = 8.5f;
-
+    [SerializeField]    
+    private GameObject _shields;
 
 
     private SpawnManager _spawnManager;
@@ -88,14 +87,23 @@ public class Player : MonoBehaviour
         StartCoroutine(PowerDownSpeedBoost());        
     }
 
-    public void ShieldActive()
+    public void ShieldsActive()
     {
-        _IsShieldActive = true;
-        Debug.Log("Shields were collected");
+        _IsShieldsActive = true;
+        _shields.SetActive(true);
     }
 
     public void Damage()
     {
+        if (_IsShieldsActive)
+        {
+            //deactivate shields
+            _IsShieldsActive = false;
+            _shields.SetActive(false);
+            return;
+        }
+        
+
         _lives -= 1;
 
         //check if dead, if so, destroy us
