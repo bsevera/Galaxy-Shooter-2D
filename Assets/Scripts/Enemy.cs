@@ -12,9 +12,14 @@ public class Enemy : MonoBehaviour
     private float _minX = -9.0f;
     private float _maxX = 9.0f;
 
+    private Player _player;
+
     // Start is called before the first frame update
     void Start()
     {
+        //get a reference to the player object
+        _player = GameObject.Find("Player").GetComponent<Player>();
+
         //position object at the top of the screen
         SetStartPosition();
     }
@@ -69,7 +74,14 @@ public class Enemy : MonoBehaviour
             }
             else
             {
+                //standard laser
                 Destroy(other.gameObject);
+            }
+
+            //add 10 to score
+            if (_player != null)
+            {
+                _player.IncreaseScore(10);
             }
 
             //destroy us

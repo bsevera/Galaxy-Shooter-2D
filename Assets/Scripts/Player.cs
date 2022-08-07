@@ -19,8 +19,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _isTripleShotActive = false;
 
-    [SerializeField]
-    private bool _isSpeedBoostActive = false;
+    //[SerializeField]
+    //private bool _isSpeedBoostActive = false;
 
     [SerializeField]
     private bool _IsShieldsActive = false;
@@ -43,12 +43,19 @@ public class Player : MonoBehaviour
     [SerializeField]    
     private GameObject _shields;
 
-
     private SpawnManager _spawnManager;
+
+    [SerializeField]
+    private int _score = 0;
+
+    //public int Score { get { return _score; } }
+
+    private UIManager _UIManager;
 
     // Start is called before the first frame update
     void Start()
     {
+
         //take the current position and assign it a start position of 0, 0, 0 
         transform.position = new Vector3(0, 0, 0);
 
@@ -58,6 +65,14 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("spawnManager is null!");
         }
+
+        //Find UIManager and cache it for later
+        _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_UIManager == null)
+        {
+            Debug.Log("UIManager is null");
+        }
+
     }
 
     // Update is called once per frame
@@ -83,7 +98,7 @@ public class Player : MonoBehaviour
     public void SpeedBoostActive()
     {
         _speed *= _speedMultiplier;
-        _isSpeedBoostActive = true;
+        //_isSpeedBoostActive = true;
         StartCoroutine(PowerDownSpeedBoost());        
     }
 
@@ -91,6 +106,15 @@ public class Player : MonoBehaviour
     {
         _IsShieldsActive = true;
         _shields.SetActive(true);
+    }
+
+    public void IncreaseScore(int incomingPoints)
+    {
+        _score += incomingPoints;
+        if (_UIManager != null)
+        {
+            _UIManager.UpdateScore(_score);
+        }
     }
 
     public void Damage()
@@ -105,6 +129,9 @@ public class Player : MonoBehaviour
         
 
         _lives -= 1;
+
+        //update lives count in UI
+        _UIManager.UpdateLives(_lives);
 
         //check if dead, if so, destroy us
         if (_lives < 1)
@@ -201,7 +228,7 @@ public class Player : MonoBehaviour
     IEnumerator PowerDownSpeedBoost()
     {
         yield return new WaitForSeconds(_speedActiveLengthOfTime);
-        _isSpeedBoostActive = false;
+        //_isSpeedBoostActive = false;
         _speed /= _speedMultiplier;
     }
 }
