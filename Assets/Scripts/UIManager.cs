@@ -57,6 +57,8 @@ public class UIManager : MonoBehaviour
         _scoreText.text = "Score: " + playerScore;
     }
 
+
+
     public void UpdateLives(int currentLives)
     {
         _livesCountImage.sprite = _liveSprites[currentLives];

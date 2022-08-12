@@ -43,6 +43,12 @@ public class Player : MonoBehaviour
     [SerializeField]    
     private GameObject _shields;
 
+    [SerializeField]
+    private GameObject _leftEngine;
+
+    [SerializeField]
+    private GameObject _rightEngine;
+
     private SpawnManager _spawnManager;
 
     [SerializeField]
@@ -133,23 +139,53 @@ public class Player : MonoBehaviour
         //update lives count in UI
         _UIManager.UpdateLives(_lives);
 
-        //check if dead, if so, destroy us
-        if (_lives < 1)
-        {            
-            //get spawn_manager object and tell it the player is dead to stop enemies from spawning
-            
-            if (_spawnManager != null)
-            {
-                _spawnManager.OnPlayerDeath();
-            }
-            else
-            {
-                Debug.Log("spawnmanager = null");
-            }
-
-            //destroy the player
-            Destroy(this.gameObject);
+        switch (_lives)
+        {
+            case 2:
+                _rightEngine.SetActive(true);
+                break;
+            case 1:
+                _leftEngine.SetActive(true);
+                break;
+            case 0:
+                PlayerDied();
+                break;
         }
+            
+
+        //check if dead, if so, destroy us
+        //if (_lives < 1)
+        //{            
+        //    //get spawn_manager object and tell it the player is dead to stop enemies from spawning
+            
+        //    if (_spawnManager != null)
+        //    {
+        //        _spawnManager.OnPlayerDeath();
+        //    }
+        //    else
+        //    {
+        //        Debug.Log("spawnmanager = null");
+        //    }
+
+        //    //destroy the player
+        //    Destroy(this.gameObject);
+        //}
+    }
+
+    void PlayerDied()
+    {
+        if (_spawnManager != null)
+        {
+            _spawnManager.OnPlayerDeath();
+        }
+        else
+        {
+            Debug.Log("spawnmanager = null");
+        }
+
+        //destroy the player
+        Destroy(this.gameObject);
+
     }
 
     void FireLaser()
@@ -196,7 +232,7 @@ public class Player : MonoBehaviour
         transform.Translate(direction * _speed * Time.deltaTime);
 
         //constrain the object to not move past 8 and -8 on the horizontal
-        //constrain the object to not move past 0 and -4 on the vertical
+        //constrain the object to not move past 0 and -3.5 on the vertical
         if (transform.position.x >= 8)
         {
             transform.position = new Vector3(8, transform.position.y, 0);
@@ -210,9 +246,9 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, 0, 0);
         }
-        else if (transform.position.y <= -4)
+        else if (transform.position.y <= -3.5f)
         {
-            transform.position = new Vector3(transform.position.x, -4, 0);
+            transform.position = new Vector3(transform.position.x, -3.5f, 0);
         }
 
     }

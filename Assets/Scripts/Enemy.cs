@@ -13,12 +13,23 @@ public class Enemy : MonoBehaviour
     private float _maxX = 9.0f;
 
     private Player _player;
+    private Animator _animator;
 
     // Start is called before the first frame update
     void Start()
     {
         //get a reference to the player object
         _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("Player object is null");
+        }
+
+        _animator = GetComponent<Animator>();
+        if (_animator == null)
+        {
+            Debug.LogError("Enemy object is null");
+        }
 
         //position object at the top of the screen
         SetStartPosition();
@@ -60,8 +71,14 @@ public class Enemy : MonoBehaviour
                 player.Damage();
             }
 
+            //set speed to 0 before starting the animation
+            _speed = 0f;
+
+            //destroy animation
+            _animator.SetTrigger("OnEnemyDeath");
+
             //destroy us
-            Destroy(this.gameObject);
+            Destroy(this.gameObject, 2.8f);
         }
 
         if (other.tag == "Laser")
@@ -75,7 +92,7 @@ public class Enemy : MonoBehaviour
             else
             {
                 //standard laser
-                Destroy(other.gameObject);
+                Destroy(other.gameObject, 2.8f);
             }
 
             //add 10 to score
@@ -84,8 +101,14 @@ public class Enemy : MonoBehaviour
                 _player.IncreaseScore(10);
             }
 
-            //destroy us
-            Destroy(this.gameObject);
+            //set speed to 0 before starting the animation
+            _speed = 0f;
+
+            //destroy animation
+            _animator.SetTrigger("OnEnemyDeath");
+
+            //destroy us            
+            Destroy(this.gameObject, 2.8f);
         }
     }
 

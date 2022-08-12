@@ -70,7 +70,7 @@ public class Powerup : MonoBehaviour
                         player.ShieldsActive();
                         break;
                     default:
-                        Debug.Log("Unknown value");
+                        Debug.Log("Unknown powerupID value");
                         break;
                 }
             }
