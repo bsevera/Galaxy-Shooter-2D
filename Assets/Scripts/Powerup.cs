@@ -12,6 +12,9 @@ public class Powerup : MonoBehaviour
     private float _minX = -9.0f;
     private float _maxX = 9.0f;
 
+    [SerializeField]
+    private AudioClip _audioClip;
+    
     //ID for powerups
     //0 = triple shot
     //1 = speed
@@ -25,8 +28,8 @@ public class Powerup : MonoBehaviour
     {
         //position object at the top of the screen
         SetStartPosition();
-
     }
+
     private void SetStartPosition()
     {
         float randomX = Random.Range(_minX, _maxX);
@@ -55,7 +58,9 @@ public class Powerup : MonoBehaviour
         {
             Player player = other.transform.GetComponent<Player>();
 
-            //damage the player
+            //play sound effect
+            AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+            
             if (player != null)
             {
                 switch (powerupID)
@@ -73,7 +78,9 @@ public class Powerup : MonoBehaviour
                         Debug.Log("Unknown powerupID value");
                         break;
                 }
+
             }
+
 
             //destroy us
             Destroy(this.gameObject);

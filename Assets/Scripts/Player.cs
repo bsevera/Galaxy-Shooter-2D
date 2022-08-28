@@ -49,13 +49,19 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _rightEngine;
 
+    [SerializeField]
+    private AudioClip _laserShotAudioClip;
+
+    [SerializeField]
+    private AudioClip _powerUpAudioClip;
+
+    private AudioSource _AudioSource;
+
     private SpawnManager _spawnManager;
 
     [SerializeField]
     private int _score = 0;
-
-    //public int Score { get { return _score; } }
-
+    
     private UIManager _UIManager;
 
     // Start is called before the first frame update
@@ -79,13 +85,18 @@ public class Player : MonoBehaviour
             Debug.Log("UIManager is null");
         }
 
+        //get the audio component of the player and assign the audio clip for the fire laser sound
+        _AudioSource = GetComponent<AudioSource>();
+        if (_AudioSource == null)
+        {
+            Debug.LogError("Audio Source of the Player is Null");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        SetSpeed();
         CalculateMovement();
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
@@ -95,21 +106,29 @@ public class Player : MonoBehaviour
 
     }
 
+    private void PlayPowerUpSoundEffect()
+    {
+        _AudioSource.clip = _powerUpAudioClip;
+        _AudioSource.Play();
+    }
+
     public void TripleShotActive()
-    {        
+    {
+        PlayPowerUpSoundEffect();
         _isTripleShotActive = true;
         StartCoroutine(PowerDownTripleShot());
     }
 
     public void SpeedBoostActive()
     {
-        _speed *= _speedMultiplier;
-        //_isSpeedBoostActive = true;
+        PlayPowerUpSoundEffect();
+        _speed *= _speedMultiplier;        
         StartCoroutine(PowerDownSpeedBoost());        
     }
 
     public void ShieldsActive()
     {
+        PlayPowerUpSoundEffect();
         _IsShieldsActive = true;
         _shields.SetActive(true);
     }
@@ -203,25 +222,28 @@ public class Player : MonoBehaviour
             Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
         }
 
+        //play the audio clip
+        _AudioSource.clip = _laserShotAudioClip;
+        _AudioSource.Play();
     }
 
-    void SetSpeed()
-    {
-        if (Input.GetKeyDown(KeyCode.Equals)) //plus key is located on the equals key
-        {
-            if (_speed < 11.0f)
-            {
-                _speed += 1.0f;                
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.Minus))
-        {
-            if (_speed > 0.0f)
-            {
-                _speed -= 1.0f;                
-            }
-        }
-    }
+    //void SetSpeed()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Equals)) //plus key is located on the equals key
+    //    {
+    //        if (_speed < 11.0f)
+    //        {
+    //            _speed += 1.0f;                
+    //        }
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.Minus))
+    //    {
+    //        if (_speed > 0.0f)
+    //        {
+    //            _speed -= 1.0f;                
+    //        }
+    //    }
+    //}
 
     void CalculateMovement()
     {

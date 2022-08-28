@@ -20,6 +20,7 @@ public class Asteroid : MonoBehaviour
         {
             Debug.LogError("SpawnManager is NULL");
         }
+
     }
 
 

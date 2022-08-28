@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.PostProcessing;
+
+
 
 public class UIManager : MonoBehaviour
 {
@@ -23,9 +25,11 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Sprite[] _liveSprites;
-    
+       
     private GameManager _gameManager;
     
+    private PostProcessVolume _postProcessVolume;
+    private LensDistortion _lensDistortion;
 
     // Start is called before the first frame update
     void Start()
@@ -48,7 +52,8 @@ public class UIManager : MonoBehaviour
         {
             Debug.Log("Player object is null in UIManager");
         }
-
+        
+        ApplyLensDistortion();
     }
 
 
@@ -93,6 +98,35 @@ public class UIManager : MonoBehaviour
             }
             yield return new WaitForSeconds(0.5f);
         }        
+    }    
+
+    private void ApplyLensDistortion()
+    {
+        _postProcessVolume = GameObject.Find("Post Process Volume").GetComponent<PostProcessVolume>();
+        if( _postProcessVolume != null )
+        {
+            _postProcessVolume.profile.TryGetSettings(out _lensDistortion);
+
+            StartCoroutine(ApplyLensDistortionEffect());
+        }
+        else
+        {
+            Debug.LogError("Post Process Volume is NULL");
+        }
     }
-    
+
+    IEnumerator ApplyLensDistortionEffect()
+    {
+        int val = -100;
+
+        _lensDistortion.intensity.value = val;
+        while (_lensDistortion.intensity.value < 0)
+        {
+            val += 1;
+            _lensDistortion.intensity.value = val; 
+            
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
 }

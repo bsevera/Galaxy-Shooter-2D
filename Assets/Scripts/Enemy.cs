@@ -15,6 +15,8 @@ public class Enemy : MonoBehaviour
     private Player _player;
     private Animator _animator;
 
+    private AudioSource _audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +30,13 @@ public class Enemy : MonoBehaviour
         _animator = GetComponent<Animator>();
         if (_animator == null)
         {
-            Debug.LogError("Enemy object is null");
+            Debug.LogError("Animator component of enemy object is null");
+        }
+
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            Debug.LogError("Enemy::Audio Source is null");
         }
 
         //position object at the top of the screen
@@ -78,7 +86,8 @@ public class Enemy : MonoBehaviour
             _animator.SetTrigger("OnEnemyDeath");
 
             //destroy us
-            Destroy(this.gameObject, 2.8f);
+            DestroyUs();
+            //Destroy(this.gameObject, 2.8f);
         }
 
         if (other.tag == "Laser")
@@ -108,8 +117,16 @@ public class Enemy : MonoBehaviour
             _animator.SetTrigger("OnEnemyDeath");
 
             //destroy us            
-            Destroy(this.gameObject, 2.8f);
+            DestroyUs();
+            //Destroy(this.gameObject, 2.8f);
         }
+    }
+
+    private void DestroyUs()
+    {
+        _audioSource.Play();
+        Destroy(GetComponent<Collider2D>());
+        Destroy(this.gameObject, 2.8f);
     }
 
 }
