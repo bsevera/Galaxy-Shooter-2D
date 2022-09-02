@@ -7,6 +7,9 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float _speed = 4.0f;
 
+    [SerializeField]
+    private GameObject _enemyLaserPrefab;
+
     private float _bottomOfScreen = -5.4f;
     private float _topOfScreen = 6.5f;
     private float _minX = -9.0f;
@@ -14,6 +17,9 @@ public class Enemy : MonoBehaviour
 
     private Player _player;
     private Animator _animator;
+    //private bool _enemyIsDestroyed = false;
+    private float _fireRate = -1;
+    private float _canFire;
 
     private AudioSource _audioSource;
 
@@ -41,6 +47,7 @@ public class Enemy : MonoBehaviour
 
         //position object at the top of the screen
         SetStartPosition();
+
     }
 
     // Update is called once per frame
@@ -57,6 +64,19 @@ public class Enemy : MonoBehaviour
             //if object moves off of the bottom of screen, respawn it at the top with a new random x position
             SetStartPosition();
         }
+
+        if (Time.time > _canFire)
+        {
+            _fireRate = Random.Range(2f, 4f);
+            _canFire = Time.time + _fireRate;
+            FireLaser();
+            //Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
+        }
+    }
+
+    private void CalculateMovement()
+    {
+
     }
 
     private void SetStartPosition()
@@ -65,7 +85,19 @@ public class Enemy : MonoBehaviour
 
         transform.position = new Vector3(randomX, _topOfScreen, 0);
     }
-    
+
+    private void FireLaser()
+    {
+        Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y - 1.05f, 0);
+        GameObject enemyLaser = Instantiate(_enemyLaserPrefab, laserStartingPosition, Quaternion.identity);
+        Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+
+        for (int i = 0; i < lasers.Length; i++)
+        {
+            lasers[i].AssignEnemyLaser();
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
@@ -86,8 +118,7 @@ public class Enemy : MonoBehaviour
             _animator.SetTrigger("OnEnemyDeath");
 
             //destroy us
-            DestroyUs();
-            //Destroy(this.gameObject, 2.8f);
+            DestroyUs();            
         }
 
         if (other.tag == "Laser")
@@ -116,17 +147,21 @@ public class Enemy : MonoBehaviour
             //destroy animation
             _animator.SetTrigger("OnEnemyDeath");
 
-            //destroy us            
-            DestroyUs();
-            //Destroy(this.gameObject, 2.8f);
+            //destroy us
+            DestroyUs();            
         }
     }
 
     private void DestroyUs()
     {
+
         _audioSource.Play();
+
+        //fix to not allow destroyed enemy to be hit again        
         Destroy(GetComponent<Collider2D>());
+
         Destroy(this.gameObject, 2.8f);
+        
     }
 
 }

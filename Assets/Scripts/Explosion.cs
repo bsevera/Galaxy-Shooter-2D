@@ -11,6 +11,3 @@ public class Explosion : MonoBehaviour
         Destroy(this.gameObject, 3.0f);
     }
 }
-
-
-//GetComponent<AudioSource>().Play();

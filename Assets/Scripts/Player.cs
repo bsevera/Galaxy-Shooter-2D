@@ -50,6 +50,12 @@ public class Player : MonoBehaviour
     private GameObject _rightEngine;
 
     [SerializeField]
+    private GameObject _explosionPrefab;
+
+    [SerializeField]
+    private AudioClip _explosionClip;
+
+    [SerializeField]
     private AudioClip _laserShotAudioClip;
 
     [SerializeField]
@@ -63,6 +69,9 @@ public class Player : MonoBehaviour
     private int _score = 0;
     
     private UIManager _UIManager;
+    private Animator _animator;
+
+    private bool _playerExploding = false;
 
     // Start is called before the first frame update
     void Start()
@@ -91,17 +100,20 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("Audio Source of the Player is Null");
         }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        CalculateMovement();
-
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+        if (_playerExploding == false)
         {
-            FireLaser();
+            CalculateMovement();
+
+            if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+            {
+                FireLaser();
+            }
         }
 
     }
@@ -152,8 +164,11 @@ public class Player : MonoBehaviour
             return;
         }
         
-
-        _lives -= 1;
+        //somehow player lives was getting below 0
+        if (_lives > 0)
+        {
+            _lives -= 1;
+        }
 
         //update lives count in UI
         _UIManager.UpdateLives(_lives);
@@ -171,24 +186,6 @@ public class Player : MonoBehaviour
                 break;
         }
             
-
-        //check if dead, if so, destroy us
-        //if (_lives < 1)
-        //{            
-        //    //get spawn_manager object and tell it the player is dead to stop enemies from spawning
-            
-        //    if (_spawnManager != null)
-        //    {
-        //        _spawnManager.OnPlayerDeath();
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("spawnmanager = null");
-        //    }
-
-        //    //destroy the player
-        //    Destroy(this.gameObject);
-        //}
     }
 
     void PlayerDied()
@@ -203,6 +200,10 @@ public class Player : MonoBehaviour
         }
 
         //destroy the player
+        _playerExploding = true;
+        _AudioSource.clip = _explosionClip;
+        _AudioSource.Play();
+        Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
         Destroy(this.gameObject);
 
     }
@@ -227,24 +228,7 @@ public class Player : MonoBehaviour
         _AudioSource.Play();
     }
 
-    //void SetSpeed()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Equals)) //plus key is located on the equals key
-    //    {
-    //        if (_speed < 11.0f)
-    //        {
-    //            _speed += 1.0f;                
-    //        }
-    //    }
-    //    else if (Input.GetKeyDown(KeyCode.Minus))
-    //    {
-    //        if (_speed > 0.0f)
-    //        {
-    //            _speed -= 1.0f;                
-    //        }
-    //    }
-    //}
-
+   
     void CalculateMovement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -288,5 +272,15 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(_speedActiveLengthOfTime);
         //_isSpeedBoostActive = false;
         _speed /= _speedMultiplier;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "EnemyLaser")
+        {
+            Damage();
+
+            Destroy(other.gameObject);
+        }
     }
 }
