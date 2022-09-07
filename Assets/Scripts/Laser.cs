@@ -69,4 +69,8 @@ public class Laser : MonoBehaviour
         _isEnemyLaser = true;
     }
 
+    public void StopLaserMovement()
+    {
+        _speed = 0;
+    }
 }

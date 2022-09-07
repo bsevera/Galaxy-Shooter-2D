@@ -123,6 +123,13 @@ public class Enemy : MonoBehaviour
 
         if (other.tag == "Laser")
         {
+            //stop laser from moving past the enemy when it collides
+            Laser laser = other.transform.GetComponent<Laser>();
+            if (laser != null)
+            {
+                laser.StopLaserMovement();
+            }
+
             //destroy laser
             if (other.transform.parent != null)
             {
@@ -131,8 +138,8 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                //standard laser
-                Destroy(other.gameObject, 2.8f);
+                //standard laser                
+                Destroy(other.gameObject);
             }
 
             //add 10 to score
