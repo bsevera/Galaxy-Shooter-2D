@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
 
     private Player _player;
     private Animator _animator;
-    //private bool _enemyIsDestroyed = false;
+    private bool _enemyIsDestroyed = false;
     private float _fireRate = -1;
     private float _canFire;
 
@@ -53,7 +53,19 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CalculateMovement();
 
+
+        if ((Time.time > _canFire) && _enemyIsDestroyed == false)
+        {
+            _fireRate = Random.Range(2f, 4f);
+            _canFire = Time.time + _fireRate;
+            FireLaser();            
+        }
+    }
+
+    private void CalculateMovement()
+    {
         if (transform.position.y > _bottomOfScreen)
         {
             //move down 4 meters per second
@@ -64,18 +76,6 @@ public class Enemy : MonoBehaviour
             //if object moves off of the bottom of screen, respawn it at the top with a new random x position
             SetStartPosition();
         }
-
-        if (Time.time > _canFire)
-        {
-            _fireRate = Random.Range(2f, 4f);
-            _canFire = Time.time + _fireRate;
-            FireLaser();
-            //Instantiate(_enemyLaserPrefab, transform.position, Quaternion.identity);
-        }
-    }
-
-    private void CalculateMovement()
-    {
 
     }
 
@@ -147,6 +147,8 @@ public class Enemy : MonoBehaviour
             {
                 _player.IncreaseScore(10);
             }
+
+            _enemyIsDestroyed = true;
 
             //set speed to 0 before starting the animation
             _speed = 0f;
