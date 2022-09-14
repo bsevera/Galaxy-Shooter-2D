@@ -8,6 +8,9 @@ public class Player : MonoBehaviour
     private float _speed = 5f;
 
     [SerializeField]
+    private float _thrusterMultiplier = 1.5f;
+
+    [SerializeField]
     private float _speedMultiplier = 2.0f;
 
     [SerializeField]
@@ -18,9 +21,6 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private bool _isTripleShotActive = false;
-
-    //[SerializeField]
-    //private bool _isSpeedBoostActive = false;
 
     [SerializeField]
     private bool _IsShieldsActive = false;
@@ -232,10 +232,19 @@ public class Player : MonoBehaviour
     void CalculateMovement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
+        float verticalInput = Input.GetAxis("Vertical");        
+        
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        transform.Translate(direction * _speed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            transform.Translate(direction * (_speed * _thrusterMultiplier) * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(direction * _speed * Time.deltaTime);            
+        }
+
+
 
         //constrain the object to not move past 8 and -8 on the horizontal
         //constrain the object to not move past 0 and -3.5 on the vertical

@@ -9,18 +9,23 @@ public class SpawnManager : MonoBehaviour
 
     [SerializeField]
     private float _enemySpawnRate = 5.0f;
-
-    //[SerializeField]
+    private WaitForSeconds _enemySpawnRateSeconds;
+    
     private float _powerupSpawnRate;
 
     [SerializeField]
     private GameObject _enemyContainer;
 
     [SerializeField]
-    private GameObject[] powerups;
+    private GameObject[] _powerups;
 
     private bool _stopSpawning = false;
 
+    public void Awake()
+    {
+
+        _enemySpawnRateSeconds = new WaitForSeconds(_enemySpawnRate);
+    }
 
     public void StartSpawning()
     {
@@ -47,7 +52,7 @@ public class SpawnManager : MonoBehaviour
             newEnemy.transform.parent = _enemyContainer.transform;
 
             //wait for 5 seconds
-            yield return new WaitForSeconds(_enemySpawnRate);
+            yield return _enemySpawnRateSeconds;
 
         }
     }
@@ -63,11 +68,11 @@ public class SpawnManager : MonoBehaviour
         while (_stopSpawning == false)
         {
             //create a wider range of numbers, so there is more variety in the powerups displayed
-            randomValue = Random.Range(0, powerups.Length * 100);
-            powerUpToSpawn = randomValue % powerups.Length;
+            randomValue = Random.Range(0, _powerups.Length * 100);
+            powerUpToSpawn = randomValue % _powerups.Length;
 
             Vector3 powerUpStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
-            GameObject newPowerup = Instantiate(powerups[powerUpToSpawn], powerUpStartingPosition, Quaternion.identity);            
+            GameObject newPowerup = Instantiate(_powerups[powerUpToSpawn], powerUpStartingPosition, Quaternion.identity);            
 
             _powerupSpawnRate = Random.Range(3.0f, 7.0f);
             

@@ -514,7 +514,7 @@ MonoBehaviour:
   _enemyPrefab: {fileID: 3779908869407553392, guid: 56fa2463be7edd946a9bf8cd94723881, type: 3}
   _enemySpawnRate: 5
   _enemyContainer: {fileID: 1692080857}
-  powerups:
+  _powerups:
   - {fileID: 2548850899673707684, guid: 94d5aa2f891f127448ec1630acd11515, type: 3}
   - {fileID: 4200513559061801312, guid: db2efd30039140348845d47f7894d9a2, type: 3}
   - {fileID: 8231862718340609829, guid: af0315a8f72aba548b2ccf0cdd5a9afa, type: 3}
@@ -770,6 +770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 5
+  _thrusterMultiplier: 1.5
   _speedMultiplier: 2
   _laserPrefab: {fileID: 952446013181055893, guid: 451f78b20ae970b4983c8d97583f2ff0, type: 3}
   _tripleShotPrefab: {fileID: 1918948169833142805, guid: 4374afa55ec7b4e4189697eb6d8f9a76, type: 3}
