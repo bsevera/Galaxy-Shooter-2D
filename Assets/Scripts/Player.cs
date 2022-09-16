@@ -24,6 +24,8 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private bool _IsShieldsActive = false;
+    private int _shieldHealth = 0;
+    private int _shieldHealthMax = 3;
 
     [SerializeField]
     private float _fireRate = 0.15f;
@@ -138,11 +140,52 @@ public class Player : MonoBehaviour
         StartCoroutine(PowerDownSpeedBoost());        
     }
 
+    //public void ShieldsActive()
+    //{
+    //    PlayPowerUpSoundEffect();        
+    //    _IsShieldsActive = true;
+    //    _shields.SetActive(true);
+    //}
     public void ShieldsActive()
     {
         PlayPowerUpSoundEffect();
-        _IsShieldsActive = true;
-        _shields.SetActive(true);
+
+        if (_IsShieldsActive)
+        {
+            if (_shieldHealth < _shieldHealthMax)
+            {
+                _shieldHealth += 1;
+            }
+        }
+        else
+        {
+            _shieldHealth = _shieldHealthMax;
+            _IsShieldsActive = true;
+            _shields.SetActive(true);
+        }
+
+        SetShieldImage();
+    }
+
+
+    private void SetShieldImage()
+    {
+        switch (_shieldHealth)
+        {
+            case 3:
+                _shields.transform.localScale = new Vector3(2.1f, 2.1f, 2.1f);
+                //_shields.GetComponent<SpriteRenderer>().color = Color.white;
+                break;
+            case 2:
+                _shields.transform.localScale = new Vector3(1.4f, 1.4f, 1.4f);
+                //_shields.GetComponent<SpriteRenderer>().color = Color.white;
+                break;
+            case 1:
+                _shields.transform.localScale = new Vector3(.7f, .7f, .7f);
+                break;
+        }
+            
+
     }
 
     public void IncreaseScore(int incomingPoints)
@@ -154,16 +197,60 @@ public class Player : MonoBehaviour
         }
     }
 
+    //public void Damage()
+    //{
+    //    if (_IsShieldsActive)
+    //    {
+    //        //deactivate shields
+    //        _IsShieldsActive = false;
+    //        _shields.SetActive(false);
+    //        return;
+    //    }
+
+    //    //somehow player lives was getting below 0
+    //    if (_lives > 0)
+    //    {
+    //        _lives -= 1;
+    //    }
+
+    //    //update lives count in UI
+    //    _UIManager.UpdateLives(_lives);
+
+    //    switch (_lives)
+    //    {
+    //        case 2:
+    //            _rightEngine.SetActive(true);
+    //            break;
+    //        case 1:
+    //            _leftEngine.SetActive(true);
+    //            break;
+    //        case 0:
+    //            PlayerDied();
+    //            break;
+    //    }
+
+    //}
+
     public void Damage()
     {
         if (_IsShieldsActive)
         {
-            //deactivate shields
-            _IsShieldsActive = false;
-            _shields.SetActive(false);
+            _shieldHealth -= 1;            
+
+            if (_shieldHealth == 0)
+            {
+                //deactivate shields
+                _IsShieldsActive = false;
+                _shields.SetActive(false);
+            }
+            else
+            {
+                SetShieldImage();
+            }
+
             return;
         }
-        
+
         //somehow player lives was getting below 0
         if (_lives > 0)
         {
@@ -185,8 +272,9 @@ public class Player : MonoBehaviour
                 PlayerDied();
                 break;
         }
-            
+
     }
+
 
     void PlayerDied()
     {
