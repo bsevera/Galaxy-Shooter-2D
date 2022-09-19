@@ -46,6 +46,10 @@ public class Player : MonoBehaviour
     private GameObject _shields;
 
     [SerializeField]
+    private GameObject _thrusters;
+    private bool _speedBoostIsActive = false;
+
+    [SerializeField]
     private GameObject _leftEngine;
 
     [SerializeField]
@@ -136,6 +140,8 @@ public class Player : MonoBehaviour
     public void SpeedBoostActive()
     {
         PlayPowerUpSoundEffect();
+        ShowThrusterImage(true);
+        _speedBoostIsActive = true;
         _speed *= _speedMultiplier;        
         StartCoroutine(PowerDownSpeedBoost());        
     }
@@ -174,18 +180,14 @@ public class Player : MonoBehaviour
         {
             case 3:
                 _shields.transform.localScale = new Vector3(2.1f, 2.1f, 2.1f);
-                //_shields.GetComponent<SpriteRenderer>().color = Color.white;
                 break;
             case 2:
                 _shields.transform.localScale = new Vector3(1.4f, 1.4f, 1.4f);
-                //_shields.GetComponent<SpriteRenderer>().color = Color.white;
                 break;
             case 1:
                 _shields.transform.localScale = new Vector3(.7f, .7f, .7f);
                 break;
         }
-            
-
     }
 
     public void IncreaseScore(int incomingPoints)
@@ -326,10 +328,17 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             transform.Translate(direction * (_speed * _thrusterMultiplier) * Time.deltaTime);
+            ShowThrusterImage(true);
         }
         else
         {
-            transform.Translate(direction * _speed * Time.deltaTime);            
+            transform.Translate(direction * _speed * Time.deltaTime);
+
+            //if thrusters <> active
+            if (_speedBoostIsActive == false)
+            {
+                ShowThrusterImage(false);
+            }
         }
 
 
@@ -356,6 +365,11 @@ public class Player : MonoBehaviour
 
     }
 
+    private void ShowThrusterImage(bool active)
+    {
+        _thrusters.SetActive(active);
+    }
+
     IEnumerator PowerDownTripleShot()
     {
         yield return new WaitForSeconds(_tripleShotActiveLengthOfTime);
@@ -366,9 +380,10 @@ public class Player : MonoBehaviour
 
     IEnumerator PowerDownSpeedBoost()
     {
-        yield return new WaitForSeconds(_speedActiveLengthOfTime);
-        //_isSpeedBoostActive = false;
+        yield return new WaitForSeconds(_speedActiveLengthOfTime);        
         _speed /= _speedMultiplier;
+        ShowThrusterImage(false);
+        _speedBoostIsActive = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

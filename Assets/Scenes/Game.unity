@@ -781,6 +781,7 @@ MonoBehaviour:
   _tripleShotActiveLengthOfTime: 5
   _speedActiveLengthOfTime: 5
   _shields: {fileID: 1626932605}
+  _thrusters: {fileID: 1826342888}
   _leftEngine: {fileID: 446936427}
   _rightEngine: {fileID: 1873785154}
   _explosionPrefab: {fileID: 3099630988076795892, guid: 275d01f12ba96b0468769a7ff3fc8d9d, type: 3}
@@ -1778,7 +1779,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1826342889
 Transform:
   m_ObjectHideFlags: 0
