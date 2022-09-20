@@ -67,15 +67,25 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _powerUpAudioClip;
 
+    [SerializeField]
+    private AudioClip _shieldsDownClip;
+
+    [SerializeField]
+    private AudioClip _noAmmoClip;
+
     private AudioSource _AudioSource;
 
     private SpawnManager _spawnManager;
 
     [SerializeField]
     private int _score = 0;
+
+    [SerializeField]
+    private int _maxAmmo = 15;
+    private int _currentAmmo = 15;
     
     private UIManager _UIManager;
-    private Animator _animator;
+    //private Animator _animator;
 
     private bool _playerExploding = false;
 
@@ -116,9 +126,14 @@ public class Player : MonoBehaviour
         {
             CalculateMovement();
 
-            if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+            if (_currentAmmo > 0 && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
             {
                 FireLaser();
+            }
+            else if (_currentAmmo == 0 && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+            {
+                _AudioSource.clip = _noAmmoClip;
+                _AudioSource.Play();
             }
         }
 
@@ -129,7 +144,7 @@ public class Player : MonoBehaviour
         _AudioSource.clip = _powerUpAudioClip;
         _AudioSource.Play();
     }
-
+    
     public void TripleShotActive()
     {
         PlayPowerUpSoundEffect();
@@ -199,6 +214,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void UpdateAmmoUI()
+    {
+        if (_UIManager != null)
+        {
+            _UIManager.UpdateAmmo(_currentAmmo, _maxAmmo);
+        }
+    }
+
     //public void Damage()
     //{
     //    if (_IsShieldsActive)
@@ -244,6 +267,9 @@ public class Player : MonoBehaviour
                 //deactivate shields
                 _IsShieldsActive = false;
                 _shields.SetActive(false);
+
+                _AudioSource.clip = _shieldsDownClip;
+                _AudioSource.Play();
             }
             else
             {
@@ -307,10 +333,12 @@ public class Player : MonoBehaviour
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
         }
         else
-        {
-            //laser needs to be spawned .8f above the player object
+        {            
             Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
             Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
+
+            _currentAmmo -= 1;
+            UpdateAmmoUI();
         }
 
         //play the audio clip

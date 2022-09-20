@@ -20,6 +20,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Image _livesCountImage;
+
+    [SerializeField]
+    private TMP_Text _ammoText;
     
     private Player _player;
 
@@ -62,6 +65,16 @@ public class UIManager : MonoBehaviour
         _scoreText.text = "Score: " + playerScore;
     }
 
+    public void UpdateAmmo(int currentAmmo, int maxAmmo)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.Append("Ammo: ");
+        sb.Append(currentAmmo.ToString());
+        sb.Append("/");
+        sb.Append(maxAmmo.ToString());
+
+        _ammoText.text = sb.ToString();
+    }
 
 
     public void UpdateLives(int currentLives)
