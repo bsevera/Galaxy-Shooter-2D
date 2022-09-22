@@ -82,7 +82,7 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private int _maxAmmo = 15;
-    private int _currentAmmo = 15;
+    private int _currentAmmo;
     
     private UIManager _UIManager;
     //private Animator _animator;
@@ -117,6 +117,7 @@ public class Player : MonoBehaviour
             Debug.LogError("Audio Source of the Player is Null");
         }
 
+        _currentAmmo = _maxAmmo;
     }
 
     // Update is called once per frame
@@ -145,6 +146,13 @@ public class Player : MonoBehaviour
         _AudioSource.Play();
     }
     
+    public void AmmoCollected()
+    {
+        PlayPowerUpSoundEffect();
+        _currentAmmo = _maxAmmo;
+        UpdateAmmoUI();
+    }
+
     public void TripleShotActive()
     {
         PlayPowerUpSoundEffect();

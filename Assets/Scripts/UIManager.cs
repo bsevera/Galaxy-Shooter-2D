@@ -76,7 +76,6 @@ public class UIManager : MonoBehaviour
         _ammoText.text = sb.ToString();
     }
 
-
     public void UpdateLives(int currentLives)
     {
         _livesCountImage.sprite = _liveSprites[currentLives];
