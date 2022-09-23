@@ -161,7 +161,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Ammo: 15/15'
+  m_text: 'Ammo: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
   m_sharedMaterial: {fileID: -5910980090658720634, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
@@ -654,6 +654,7 @@ MonoBehaviour:
   - {fileID: 4200513559061801312, guid: db2efd30039140348845d47f7894d9a2, type: 3}
   - {fileID: 8231862718340609829, guid: af0315a8f72aba548b2ccf0cdd5a9afa, type: 3}
   - {fileID: 3898666730099223640, guid: f478901275852be48a23aba7d7643539, type: 3}
+  - {fileID: 9079517196580784442, guid: 5191a793422b99344aa13bd33aaf6f86, type: 3}
 --- !u!4 &545414120
 Transform:
   m_ObjectHideFlags: 0
@@ -927,7 +928,7 @@ MonoBehaviour:
   _shieldsDownClip: {fileID: 8300000, guid: 8995e397fe2484948835e2b27705c078, type: 3}
   _noAmmoClip: {fileID: 8300000, guid: 3c29e4cd480c25e4bb129138baec5ff6, type: 3}
   _score: 0
-  _maxAmmo: 15
+  _maxAmmo: 30
 --- !u!212 &768586561
 SpriteRenderer:
   m_ObjectHideFlags: 0

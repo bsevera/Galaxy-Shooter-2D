@@ -81,7 +81,7 @@ public class Player : MonoBehaviour
     private int _score = 0;
 
     [SerializeField]
-    private int _maxAmmo = 15;
+    private int _maxAmmo = 30;
     private int _currentAmmo;
     
     private UIManager _UIManager;
@@ -118,6 +118,8 @@ public class Player : MonoBehaviour
         }
 
         _currentAmmo = _maxAmmo;
+        UpdateAmmoUI();
+
     }
 
     // Update is called once per frame
@@ -151,6 +153,31 @@ public class Player : MonoBehaviour
         PlayPowerUpSoundEffect();
         _currentAmmo = _maxAmmo;
         UpdateAmmoUI();
+    }
+
+    public void ExtraLifeCollected()
+    {
+        PlayPowerUpSoundEffect();
+
+        if (_lives < 3)
+        {
+            _lives += 1;
+            _UIManager.UpdateLives(_lives);
+            RemoveDamage();
+        }
+    }
+
+    private void RemoveDamage()
+    {
+        switch (_lives)
+        {
+            case 3:
+                _rightEngine.SetActive(false);
+                break;
+            case 2:
+                _leftEngine.SetActive(false);
+                break;
+        }
     }
 
     public void TripleShotActive()
