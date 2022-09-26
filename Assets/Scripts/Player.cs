@@ -23,6 +23,9 @@ public class Player : MonoBehaviour
     private bool _isTripleShotActive = false;
 
     [SerializeField]
+    private bool _isBlossomLaserActive = false;
+
+    [SerializeField]
     private bool _IsShieldsActive = false;
     private int _shieldHealth = 0;
     private int _shieldHealthMax = 3;
@@ -38,6 +41,9 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float _tripleShotActiveLengthOfTime = 5.0f;
+
+    [SerializeField]
+    private float _blossomLaserActiveLengthOfTime = 5.0f;
 
     [SerializeField]
     private float _speedActiveLengthOfTime = 5.0f;
@@ -185,6 +191,13 @@ public class Player : MonoBehaviour
         PlayPowerUpSoundEffect();
         _isTripleShotActive = true;
         StartCoroutine(PowerDownTripleShot());
+    }
+
+    public void BlossomLaserActive()
+    {
+        PlayPowerUpSoundEffect();
+        _isBlossomLaserActive = true;        
+        StartCoroutine(PowerDownBlossomLaser());
     }
 
     public void SpeedBoostActive()
@@ -359,6 +372,28 @@ public class Player : MonoBehaviour
 
     }
 
+    //void FireLaser()
+    //{
+    //    _canFire = Time.time + _fireRate;
+
+    //    if (_isTripleShotActive)
+    //    {
+    //        Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+    //    }        
+    //    else
+    //    {            
+    //        Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
+    //        Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
+
+    //        _currentAmmo -= 1;
+    //        UpdateAmmoUI();
+    //    }
+
+    //    //play the audio clip
+    //    _AudioSource.clip = _laserShotAudioClip;
+    //    _AudioSource.Play();
+    //}
+
     void FireLaser()
     {
         _canFire = Time.time + _fireRate;
@@ -367,8 +402,12 @@ public class Player : MonoBehaviour
         {
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
         }
+        else if (_isBlossomLaserActive) 
+        {
+            FireBlossomLaser();
+        }
         else
-        {            
+        {
             Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
             Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
 
@@ -381,12 +420,55 @@ public class Player : MonoBehaviour
         _AudioSource.Play();
     }
 
-   
+    private void FireBlossomLaser()
+    {
+        //five lasers shoot in different directions
+        
+        //left laser
+        GameObject leftLaser = Instantiate(_laserPrefab);
+        leftLaser.GetComponent<Laser>().SetDirection(LaserDirection.Left);
+        Vector3 leftLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
+        leftLaser.transform.position = leftLaserStartingPosition;
+        leftLaser.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 90));
+
+        //left upper laser
+        GameObject upperLeftLaser = Instantiate(_laserPrefab);
+        upperLeftLaser.GetComponent<Laser>().SetDirection(LaserDirection.UpperLeft);
+        Vector3 upperLeftLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
+        upperLeftLaser.transform.position = upperLeftLaserStartingPosition;
+        upperLeftLaser.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 45));
+
+        //center laser
+        GameObject centerLaser = Instantiate(_laserPrefab);
+        centerLaser.GetComponent<Laser>().SetDirection(LaserDirection.Up);
+        Vector3 centerLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
+        centerLaser.transform.position = centerLaserStartingPosition;
+
+        //right upper laser
+        GameObject upperRightLaser = Instantiate(_laserPrefab);
+        upperRightLaser.GetComponent<Laser>().SetDirection(LaserDirection.UpperRight);
+        Vector3 upperRightLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
+        upperRightLaser.transform.position = upperLeftLaserStartingPosition;
+        upperRightLaser.transform.rotation = Quaternion.Euler(new Vector3(0, 0, -45));
+
+
+        //right laser
+        GameObject rightLaser = Instantiate(_laserPrefab);
+        rightLaser.GetComponent<Laser>().SetDirection(LaserDirection.Right);
+        Vector3 rightLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
+        rightLaser.transform.position = rightLaserStartingPosition;
+        rightLaser.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 90));
+
+        _AudioSource.clip = _laserShotAudioClip;
+        _AudioSource.Play();
+    }
+
+
     void CalculateMovement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");        
-        
+        float verticalInput = Input.GetAxis("Vertical");
+
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -439,6 +521,12 @@ public class Player : MonoBehaviour
        
         _isTripleShotActive = false;                        
 
+    }
+
+    IEnumerator PowerDownBlossomLaser()
+    {
+        yield return new WaitForSeconds(_blossomLaserActiveLengthOfTime);
+        _isBlossomLaserActive = false;
     }
 
     IEnumerator PowerDownSpeedBoost()

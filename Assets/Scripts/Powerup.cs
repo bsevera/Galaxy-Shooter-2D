@@ -5,6 +5,14 @@ using UnityEngine;
 public class Powerup : MonoBehaviour
 {
     [SerializeField]
+    private PowerupRarity _rarity;
+
+    public PowerupRarity Rarity
+    {
+        get { return _rarity; }
+    }
+
+    [SerializeField]
     private float _speed = 3.0f;
 
     private float _bottomOfScreen = -5.4f;
@@ -79,6 +87,9 @@ public class Powerup : MonoBehaviour
                         break;
                     case 4:
                         player.ExtraLifeCollected();
+                        break;
+                    case 5:
+                        player.BlossomLaserActive();
                         break;
                     default:
                         Debug.Log("Unknown powerupID value");

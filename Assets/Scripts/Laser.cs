@@ -6,7 +6,10 @@ public class Laser : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 8.0f;
-    
+
+    [SerializeField]
+    private LaserDirection _laserDirection;
+
     private bool _isEnemyLaser = false;
 
 
@@ -20,9 +23,34 @@ public class Laser : MonoBehaviour
         }
         else
         {
-            MoveUp();
+            //create method to analyze which direction the laser is moving (use switch).  Move the MoveUp method to the switch statement in that method.
+            MoveLaser();
+            //MoveUp();
         }
 
+    }
+
+    private void MoveLaser()
+    {
+        switch (_laserDirection)
+        {
+            case LaserDirection.Left:
+                MoveLeft();
+                break;
+            case LaserDirection.UpperLeft:
+                MoveUpAndLeft();
+                break;
+            case LaserDirection.Up:
+                MoveUp();
+                break;
+            case LaserDirection.UpperRight:
+                MoveUpAndRight();
+                break;
+            case LaserDirection.Right:
+                MoveRight();
+                break;
+
+        }
     }
 
     private void MoveDown()
@@ -44,6 +72,34 @@ public class Laser : MonoBehaviour
 
     }
 
+    private void MoveLeft()
+    {
+        //Vector3 newPosition = new Vector3(transform.position.x - 1, transform.position.y, 0);
+        transform.Translate(Vector3.left * _speed * Time.deltaTime, Space.World);
+        if (transform.position.x < -9)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    Vector3 VectorFromAngle (float theta)
+    {
+        return new Vector3 (Mathf.Cos(theta), Mathf.Sin(theta));
+    }
+
+    private void MoveUpAndLeft()
+    {
+        //Vector3 newPosition = VectorFromAngle(315);
+        Vector3 newPosition = VectorFromAngle(90);
+        //Vector3 newPosition = new Vector3(transform.position.x - 1, transform.position.y + 1, 0);
+        transform.Translate(newPosition * _speed * Time.deltaTime, Space.World);
+
+        if (transform.position.x < -9 || transform.position.y > 9)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
     private void MoveUp()
     {
         //move laser up
@@ -61,7 +117,32 @@ public class Laser : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+    }
 
+    private void MoveUpAndRight()
+    {
+        Vector3 newPosition = VectorFromAngle(45);
+        //Vector3 newPosition = new Vector3(transform.position.x + 1, transform.position.y + 1, 0);
+        transform.Translate(newPosition * _speed * Time.deltaTime, Space.World);
+
+        if (transform.position.x > 9 || transform.position.y > 9)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void MoveRight()
+    {
+        transform.Translate(Vector3.right * _speed * Time.deltaTime, Space.World);
+        if (transform.position.x > 9)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    public void SetDirection(LaserDirection direction)
+    {
+        _laserDirection = direction;
     }
 
     public void AssignEnemyLaser()
