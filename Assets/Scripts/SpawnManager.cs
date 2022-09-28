@@ -126,14 +126,10 @@ public class SpawnManager : MonoBehaviour
             {
                 //increase the count to simulate the rareness
                 _powerupRarityMonitor[powerUpToSpawn] += 1;
+
+                //wait before attempting to spawn another powerup
+                yield return new WaitForSeconds(1.5f);
             }
-
-            //Vector3 powerUpStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
-            //GameObject newPowerup = Instantiate(_powerups[powerUpToSpawn], powerUpStartingPosition, Quaternion.identity);
-
-            //_powerupSpawnRate = Random.Range(3.0f, 7.0f);
-
-            //yield return new WaitForSeconds(_powerupSpawnRate);
         }
     }
 
@@ -147,7 +143,6 @@ public class SpawnManager : MonoBehaviour
         {
             return false;
         }
-
     }
 
 }

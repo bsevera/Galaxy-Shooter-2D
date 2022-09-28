@@ -1,6 +1,6 @@
 public enum PowerupRarity
 {
-    Common,
-    Uncommon,
-    Rare
+    Common = 0,
+    Uncommon = 2,
+    Rare = 4
 }

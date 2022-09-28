@@ -23,9 +23,7 @@ public class Laser : MonoBehaviour
         }
         else
         {
-            //create method to analyze which direction the laser is moving (use switch).  Move the MoveUp method to the switch statement in that method.
-            MoveLaser();
-            //MoveUp();
+            MoveLaser();            
         }
 
     }
@@ -49,7 +47,6 @@ public class Laser : MonoBehaviour
             case LaserDirection.Right:
                 MoveRight();
                 break;
-
         }
     }
 
@@ -74,7 +71,6 @@ public class Laser : MonoBehaviour
 
     private void MoveLeft()
     {
-        //Vector3 newPosition = new Vector3(transform.position.x - 1, transform.position.y, 0);
         transform.Translate(Vector3.left * _speed * Time.deltaTime, Space.World);
         if (transform.position.x < -9)
         {
@@ -82,16 +78,9 @@ public class Laser : MonoBehaviour
         }
     }
 
-    Vector3 VectorFromAngle (float theta)
-    {
-        return new Vector3 (Mathf.Cos(theta), Mathf.Sin(theta));
-    }
-
     private void MoveUpAndLeft()
     {
-        //Vector3 newPosition = VectorFromAngle(315);
         Vector3 newPosition = VectorFromAngle(90);
-        //Vector3 newPosition = new Vector3(transform.position.x - 1, transform.position.y + 1, 0);
         transform.Translate(newPosition * _speed * Time.deltaTime, Space.World);
 
         if (transform.position.x < -9 || transform.position.y > 9)
@@ -122,7 +111,6 @@ public class Laser : MonoBehaviour
     private void MoveUpAndRight()
     {
         Vector3 newPosition = VectorFromAngle(45);
-        //Vector3 newPosition = new Vector3(transform.position.x + 1, transform.position.y + 1, 0);
         transform.Translate(newPosition * _speed * Time.deltaTime, Space.World);
 
         if (transform.position.x > 9 || transform.position.y > 9)
@@ -138,6 +126,11 @@ public class Laser : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+    }
+
+    Vector3 VectorFromAngle(float theta)
+    {
+        return new Vector3(Mathf.Cos(theta), Mathf.Sin(theta), 0);
     }
 
     public void SetDirection(LaserDirection direction)
