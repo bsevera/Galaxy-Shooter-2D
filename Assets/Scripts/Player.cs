@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
-{
+{    
+
     [SerializeField]
     private float _speed = 5f;
 
@@ -89,7 +90,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _maxAmmo = 30;
     private int _currentAmmo;
-    
+
+    private MainCamera _mainCamera;
     private UIManager _UIManager;
     //private Animator _animator;
 
@@ -108,6 +110,14 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("spawnManager is null!");
         }
+
+        //Find the main camera object and cache it for later
+        _mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        if (_mainCamera == null)
+        {
+            Debug.LogError("Camera is null");
+        }
+
 
         //Find UIManager and cache it for later
         _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
@@ -143,6 +153,11 @@ public class Player : MonoBehaviour
             {
                 _AudioSource.clip = _noAmmoClip;
                 _AudioSource.Play();
+            }
+
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                StartCoroutine(IncreaseFuelRoutine());
             }
         }
 
@@ -209,12 +224,6 @@ public class Player : MonoBehaviour
         StartCoroutine(PowerDownSpeedBoost());        
     }
 
-    //public void ShieldsActive()
-    //{
-    //    PlayPowerUpSoundEffect();        
-    //    _IsShieldsActive = true;
-    //    _shields.SetActive(true);
-    //}
     public void ShieldsActive()
     {
         PlayPowerUpSoundEffect();
@@ -339,15 +348,25 @@ public class Player : MonoBehaviour
         switch (_lives)
         {
             case 2:
+                _AudioSource.clip = _explosionClip;
+                _AudioSource.Play();
+
                 _rightEngine.SetActive(true);
                 break;
             case 1:
+                _AudioSource.clip = _explosionClip;
+                _AudioSource.Play();
+
                 _leftEngine.SetActive(true);
                 break;
             case 0:
                 PlayerDied();
                 break;
         }
+
+        //shake camera after being hit
+        _mainCamera.ShakeCamera();
+
 
     }
 
@@ -470,10 +489,16 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && _UIManager.ThrusterFuelEmpty() == false)
         {
             transform.Translate(direction * (_speed * _thrusterMultiplier) * Time.deltaTime);
             ShowThrusterImage(true);
+
+            //only decrease thruster gauge if speed boost is not active
+            if (_speedBoostIsActive == false)
+            {
+                _UIManager.DecreaseThrusterFuel();
+            }
         }
         else
         {
@@ -535,6 +560,15 @@ public class Player : MonoBehaviour
         _speed /= _speedMultiplier;
         ShowThrusterImage(false);
         _speedBoostIsActive = false;
+    }
+
+    IEnumerator IncreaseFuelRoutine()
+    {
+        while (_UIManager.ThrusterFuelFull() == false)
+        {
+            _UIManager.IncreaseThrusterFuel();
+            yield return new WaitForSeconds(.2f);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

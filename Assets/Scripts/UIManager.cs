@@ -28,6 +28,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Sprite[] _liveSprites;
+
+    [SerializeField]
+    private Slider _thrusterGauge;
        
     private GameManager _gameManager;
     
@@ -138,6 +141,50 @@ public class UIManager : MonoBehaviour
             _lensDistortion.intensity.value = val; 
             
             yield return new WaitForSeconds(0.05f);
+        }
+    }
+
+    public void IncreaseThrusterFuel()
+    {
+        _thrusterGauge.value += 0.5f;
+
+        if (_thrusterGauge.value > 0)
+        {
+            _thrusterGauge.fillRect.gameObject.SetActive(true);
+        }
+    }
+
+    public void DecreaseThrusterFuel()
+    {
+        _thrusterGauge.value -= 0.2f;
+
+        if (_thrusterGauge.value == 0)
+        {
+            _thrusterGauge.fillRect.gameObject.SetActive(false);            
+        }
+    }
+
+    public bool ThrusterFuelFull()
+    {
+        if (_thrusterGauge.value == _thrusterGauge.maxValue)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool ThrusterFuelEmpty()
+    {
+        if (_thrusterGauge.value == _thrusterGauge.minValue)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
