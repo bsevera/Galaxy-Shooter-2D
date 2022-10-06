@@ -92,8 +92,7 @@ public class Player : MonoBehaviour
     private int _currentAmmo;
 
     private MainCamera _mainCamera;
-    private UIManager _UIManager;
-    //private Animator _animator;
+    private UIManager _UIManager;    
 
     private bool _playerExploding = false;
 
@@ -279,40 +278,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    //public void Damage()
-    //{
-    //    if (_IsShieldsActive)
-    //    {
-    //        //deactivate shields
-    //        _IsShieldsActive = false;
-    //        _shields.SetActive(false);
-    //        return;
-    //    }
-
-    //    //somehow player lives was getting below 0
-    //    if (_lives > 0)
-    //    {
-    //        _lives -= 1;
-    //    }
-
-    //    //update lives count in UI
-    //    _UIManager.UpdateLives(_lives);
-
-    //    switch (_lives)
-    //    {
-    //        case 2:
-    //            _rightEngine.SetActive(true);
-    //            break;
-    //        case 1:
-    //            _leftEngine.SetActive(true);
-    //            break;
-    //        case 0:
-    //            PlayerDied();
-    //            break;
-    //    }
-
-    //}
-
     public void Damage()
     {
         if (_IsShieldsActive)
@@ -366,7 +331,6 @@ public class Player : MonoBehaviour
 
         //shake camera after being hit
         _mainCamera.ShakeCamera();
-
 
     }
 

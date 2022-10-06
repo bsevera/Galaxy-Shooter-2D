@@ -27,6 +27,9 @@ public class Powerup : MonoBehaviour
     //0 = triple shot
     //1 = speed
     //2 = shields
+    //3 = ammo
+    //4 = extra life
+    //5 = blossom laser
 
     [SerializeField]
     private int powerupID;
