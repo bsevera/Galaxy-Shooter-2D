@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,22 @@ public class Enemy : MonoBehaviour
 
     private AudioSource _audioSource;
 
+    [SerializeField]
+    private EnemyMovementPattern _MovementPattern;
+    private float _spawnTime;
+    private float _frequency;
+    private float _phase;
+    private float _distanceY;
+
+    private void Awake()
+    {
+        //randomly assign the movement pattern
+        int count = Enum.GetValues(typeof(EnemyMovementPattern)).Length;
+        int movementIndex = UnityEngine.Random.Range(0, count);
+        _MovementPattern = (EnemyMovementPattern)Enum.GetValues(typeof(EnemyMovementPattern)).GetValue(movementIndex);
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +62,13 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Enemy::Audio Source is null");
         }
 
+        if (_MovementPattern == EnemyMovementPattern.ZigZagDown)
+        {
+            _spawnTime = Time.time;
+            _frequency = (float)(Math.PI * UnityEngine.Random.Range(0.16f, 0.64f));
+            _phase = UnityEngine.Random.Range(0f, 2f);
+        }
+
         //position object at the top of the screen
         SetStartPosition();
 
@@ -58,7 +82,7 @@ public class Enemy : MonoBehaviour
 
         if ((Time.time > _canFire) && _enemyIsDestroyed == false)
         {
-            _fireRate = Random.Range(2f, 4f);
+            _fireRate = UnityEngine.Random.Range(2f, 4f);
             _canFire = Time.time + _fireRate;
             FireLaser();            
         }
@@ -66,9 +90,21 @@ public class Enemy : MonoBehaviour
 
     private void CalculateMovement()
     {
+        if (_MovementPattern == EnemyMovementPattern.Down)
+        {
+            MoveDown();
+        }
+        else
+        {
+            MoveZigZagDown();
+        }
+    }
+
+    private void MoveDown()
+    {
         if (transform.position.y > _bottomOfScreen)
         {
-            //move down 4 meters per second
+            //move down
             transform.Translate(Vector3.down * _speed * Time.deltaTime);
         }
         else
@@ -76,12 +112,55 @@ public class Enemy : MonoBehaviour
             //if object moves off of the bottom of screen, respawn it at the top with a new random x position
             SetStartPosition();
         }
-
     }
 
-    private void SetStartPosition()
+    private void MoveZigZagDown()
     {
-        float randomX = Random.Range(_minX, _maxX);
+        if (transform.position.y > _bottomOfScreen)
+        {
+            _distanceY = _speed * Mathf.Sin(_frequency * Time.time - _spawnTime + _phase) * Time.deltaTime;
+            transform.Translate(Vector3.right * _distanceY);
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        }
+        else
+        {
+            SetStartPosition();
+        }
+    }
+
+    //private void MoveZigZagDown()
+    //{
+    //    if (transform.position.y > _bottomOfScreen)
+    //    {
+    //        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+
+    //        Vector3 pos = Vector3.down * Time.deltaTime * _speed;
+    //        transform.position = pos + transform.right * Mathf.Sin(Time.time * 1) * 5;
+    //        //transform.position = pos + transform.right * Mathf.Tan(Time.time * 1) * 5;
+    //    }
+    //    else
+    //    {
+    //        SetStartPosition();
+    //    }
+    //}
+        //private void CalculateMovement()
+        //{
+        //    if (transform.position.y > _bottomOfScreen)
+        //    {
+        //        //move down
+        //        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        //    }
+        //    else
+        //    {
+        //        //if object moves off of the bottom of screen, respawn it at the top with a new random x position
+        //        SetStartPosition();
+        //    }
+
+        //}
+
+        private void SetStartPosition()
+    {
+        float randomX = UnityEngine.Random.Range(_minX, _maxX);
 
         transform.position = new Vector3(randomX, _topOfScreen, 0);
     }
