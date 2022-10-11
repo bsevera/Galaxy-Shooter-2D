@@ -83,6 +83,7 @@ public class Player : MonoBehaviour
     private AudioSource _AudioSource;
 
     private SpawnManager _spawnManager;
+    //private int _wave = 0;
 
     [SerializeField]
     private int _score = 0;
@@ -259,6 +260,11 @@ public class Player : MonoBehaviour
                 _shields.transform.localScale = new Vector3(.7f, .7f, .7f);
                 break;
         }
+    }
+
+    public void KilledAnEnemy()
+    {
+        _spawnManager.OnEnemyKilled();
     }
 
     public void IncreaseScore(int incomingPoints)

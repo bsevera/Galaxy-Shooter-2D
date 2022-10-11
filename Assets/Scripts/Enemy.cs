@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour
     private float _minX = -9.0f;
     private float _maxX = 9.0f;
 
+
+    private SpawnManager _spawnManager;
     private Player _player;
     private Animator _animator;
     private bool _enemyIsDestroyed = false;
@@ -48,6 +50,12 @@ public class Enemy : MonoBehaviour
         if (_player == null)
         {
             Debug.LogError("Player object is null");
+        }
+
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        if (_spawnManager == null)
+        {
+            Debug.LogError("Enemy :: Spawn Manager is null");
         }
 
         _animator = GetComponent<Animator>();
@@ -128,37 +136,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    //private void MoveZigZagDown()
-    //{
-    //    if (transform.position.y > _bottomOfScreen)
-    //    {
-    //        transform.Translate(Vector3.down * _speed * Time.deltaTime);
-
-    //        Vector3 pos = Vector3.down * Time.deltaTime * _speed;
-    //        transform.position = pos + transform.right * Mathf.Sin(Time.time * 1) * 5;
-    //        //transform.position = pos + transform.right * Mathf.Tan(Time.time * 1) * 5;
-    //    }
-    //    else
-    //    {
-    //        SetStartPosition();
-    //    }
-    //}
-        //private void CalculateMovement()
-        //{
-        //    if (transform.position.y > _bottomOfScreen)
-        //    {
-        //        //move down
-        //        transform.Translate(Vector3.down * _speed * Time.deltaTime);
-        //    }
-        //    else
-        //    {
-        //        //if object moves off of the bottom of screen, respawn it at the top with a new random x position
-        //        SetStartPosition();
-        //    }
-
-        //}
-
-        private void SetStartPosition()
+    private void SetStartPosition()
     {
         float randomX = UnityEngine.Random.Range(_minX, _maxX);
 
@@ -187,6 +165,7 @@ public class Enemy : MonoBehaviour
             //damage the player
             if (player != null)
             {
+                _spawnManager.OnEnemyKilled();                
                 player.Damage();
             }
 
@@ -226,6 +205,7 @@ public class Enemy : MonoBehaviour
             {
                 _player.IncreaseScore(10);
             }
+            _spawnManager.OnEnemyKilled();
 
             _enemyIsDestroyed = true;
 

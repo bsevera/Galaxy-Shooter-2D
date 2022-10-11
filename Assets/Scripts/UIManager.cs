@@ -10,6 +10,12 @@ using UnityEngine.Rendering.PostProcessing;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
+    private TMP_Text _killsText;
+
+    [SerializeField]
+    private TMP_Text _waveText;
+
+    [SerializeField]
     private TMP_Text _scoreText;
 
     [SerializeField]
@@ -37,6 +43,7 @@ public class UIManager : MonoBehaviour
     private PostProcessVolume _postProcessVolume;
     private LensDistortion _lensDistortion;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,10 +65,28 @@ public class UIManager : MonoBehaviour
         {
             Debug.Log("Player object is null in UIManager");
         }
-        
+
         ApplyLensDistortion();
     }
 
+    public void DisplayWaveText(int wave)
+    {
+        _waveText.text = "Wave " + wave;
+        _waveText.gameObject.SetActive(true);
+
+        StartCoroutine(HideWaveText());
+    }
+
+    public void UpdateKills(int _killed, int maxEnemiesInWave)
+    {
+        System.Text.StringBuilder kills = new System.Text.StringBuilder();
+        kills.Append("Kills: ");
+        kills.Append(_killed.ToString());
+        kills.Append(" / ");
+        kills.Append(maxEnemiesInWave);
+
+        _killsText.text = kills.ToString();
+    }
 
     public void UpdateScore(int playerScore)
     {
@@ -142,6 +167,12 @@ public class UIManager : MonoBehaviour
             
             yield return new WaitForSeconds(0.05f);
         }
+    }
+
+    IEnumerator HideWaveText()
+    {
+        yield return new WaitForSeconds(3.0f);
+        _waveText.gameObject.SetActive(false);
     }
 
     public void IncreaseThrusterFuel()

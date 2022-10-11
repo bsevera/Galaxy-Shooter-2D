@@ -8,7 +8,7 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyPrefab;
 
     [SerializeField]
-    private float _enemySpawnRate = 5.0f;
+    private float _enemySpawnRate = 4.8f; //was 5.0f
     private WaitForSeconds _enemySpawnRateSeconds;
     
     private float _powerupSpawnRate;
@@ -23,12 +23,59 @@ public class SpawnManager : MonoBehaviour
 
     private int[] _powerupRarityMonitor;
 
+    private UIManager _UIManager;
+
+    private int[] _enemiesPerWave;
+    private int _enemiesSpawnedThisWave = 0;
+    private int _enemiesKilledThisWave = 0;
+    private int _currentWave = 0;
+    private Coroutine _co;
+
     public void Awake()
     {
-
         _enemySpawnRateSeconds = new WaitForSeconds(_enemySpawnRate);
+        InitializeEnemiesPerWave();
 
         InitializePowerupRarityMonitor();
+    }
+
+    public void Start()
+    {
+        //get the UI Manager
+        _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+
+        if (_UIManager == null)
+        {
+            Debug.LogError("SpawnManager :: UI Manager is null");
+        }
+    }
+
+    public void Update()
+    {
+        //if wave complete, stop powerup spawns, start new wave
+        if (_currentWave > 0) 
+        {
+            _UIManager.UpdateKills(_enemiesKilledThisWave, _enemiesPerWave[_currentWave]);
+
+            if (_enemiesKilledThisWave == _enemiesPerWave[_currentWave])
+            {
+                StopCoroutine(_co);
+                //StopCoroutine(SpawnPowerupRoutine());
+                _currentWave += 1;
+                SpawnNextWave();
+            }
+        }
+    }
+
+    private void InitializeEnemiesPerWave()
+    {
+        _enemiesPerWave = new int[11];
+
+        //array[0] will equal 0 to make it easier to keep track of which wave we're on
+        for (int i = 0; i < 11; i++)
+        {
+            _enemiesPerWave[i] = i * 5; 
+        }
     }
 
     private void InitializePowerupRarityMonitor()
@@ -41,10 +88,35 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    //public void StartSpawning()
+    //{
+    //    StartCoroutine(SpawnEnemyRoutine());
+    //    StartCoroutine(SpawnPowerupRoutine());
+    //}
+
     public void StartSpawning()
     {
-        StartCoroutine(SpawnEnemyRoutine());
-        StartCoroutine(SpawnPowerupRoutine());
+        _currentWave += 1;
+        SpawnNextWave();
+    }
+
+
+    private void SpawnNextWave()
+    {
+        _UIManager.DisplayWaveText(_currentWave);
+
+        _enemiesKilledThisWave = 0;
+        _enemiesSpawnedThisWave = 0;
+        _enemySpawnRate += .2f;
+
+        StartCoroutine(SpawnEnemyRoutine(_enemiesPerWave[_currentWave]));
+        //StartCoroutine(SpawnPowerupRoutine());
+        
+    }
+
+    public void OnEnemyKilled()
+    {
+        _enemiesKilledThisWave += 1;
     }
 
     public void OnPlayerDeath()
@@ -52,24 +124,54 @@ public class SpawnManager : MonoBehaviour
         _stopSpawning = true;
     }
 
-    IEnumerator SpawnEnemyRoutine()
+    IEnumerator SpawnEnemyRoutine(int enemiesToSpawn)
     {
         //wait 3 seconds before starting the spawn
         yield return new WaitForSeconds(3.0f);
 
+        _co = StartCoroutine(SpawnPowerupRoutine());
+
         while (_stopSpawning == false)
         {
-            //instantiate enemy object
-            Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
-            GameObject newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
-            
-            newEnemy.transform.parent = _enemyContainer.transform;
+            if (_enemiesSpawnedThisWave < enemiesToSpawn)
+            {
 
-            //wait for 5 seconds
-            yield return _enemySpawnRateSeconds;
+                //instantiate enemy object
+                _enemiesSpawnedThisWave += 1;
+                Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
+                GameObject newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
 
+                newEnemy.transform.parent = _enemyContainer.transform;
+
+                //wait to spawn next enemy
+                yield return _enemySpawnRateSeconds;
+            }
+            else
+            {
+                //stop the coroutine, all enemies have been rendered
+                yield break;
+            }
         }
     }
+
+    //original spawn routine
+    //IEnumerator SpawnEnemyRoutine()
+    //{
+    //    //wait 3 seconds before starting the spawn
+    //    yield return new WaitForSeconds(3.0f);
+
+    //    while (_stopSpawning == false) 
+    //    {
+    //        //instantiate enemy object            
+    //        Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
+    //        GameObject newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
+
+    //        newEnemy.transform.parent = _enemyContainer.transform;
+
+    //        //wait for 5 seconds
+    //        yield return _enemySpawnRateSeconds;
+    //    }
+    //}
 
     IEnumerator SpawnPowerupRoutine()
     {
@@ -84,7 +186,7 @@ public class SpawnManager : MonoBehaviour
             //create a wider range of numbers, so there is more variety in the powerups displayed
             randomValue = Random.Range(0, _powerups.Length * 100);
             powerUpToSpawn = randomValue % _powerups.Length;
-            
+
             if (IsReadyToSpawn(powerUpToSpawn, _powerups[powerUpToSpawn].GetComponent<Powerup>().Rarity))
             {
                 //instantiate the new powerup
@@ -109,6 +211,7 @@ public class SpawnManager : MonoBehaviour
             }
         }
     }
+
 
     private bool IsReadyToSpawn(int powerupID, PowerupRarity rarity)
     {
