@@ -80,6 +80,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _noAmmoClip;
 
+    [SerializeField]
+    private AudioClip _loseAllAmmoClip;
+
     private AudioSource _AudioSource;
 
     private SpawnManager _spawnManager;
@@ -145,11 +148,11 @@ public class Player : MonoBehaviour
         {
             CalculateMovement();
 
-            if (_currentAmmo > 0 && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+            if ((_currentAmmo > 0 || _isTripleShotActive || _isBlossomLaserActive) && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)            
             {
                 FireLaser();
             }
-            else if (_currentAmmo == 0 && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+            else if (_currentAmmo == 0 && Input.GetKeyDown(KeyCode.Space) && _isTripleShotActive == false && _isBlossomLaserActive == false && Time.time > _canFire)            
             {
                 _AudioSource.clip = _noAmmoClip;
                 _AudioSource.Play();
@@ -160,7 +163,12 @@ public class Player : MonoBehaviour
                 StartCoroutine(IncreaseFuelRoutine());
             }
         }
+    }
 
+    private void PlayLoseAllAmmoSoundEffect()
+    {
+        _AudioSource.clip = _loseAllAmmoClip;
+        _AudioSource.Play();
     }
 
     private void PlayPowerUpSoundEffect()
@@ -169,6 +177,13 @@ public class Player : MonoBehaviour
         _AudioSource.Play();
     }
     
+    public void LoseAllAmmoCollected()
+    {
+        PlayLoseAllAmmoSoundEffect();
+        _currentAmmo = 0;
+        UpdateAmmoUI();
+    }
+
     public void AmmoCollected()
     {
         PlayPowerUpSoundEffect();
@@ -354,8 +369,11 @@ public class Player : MonoBehaviour
 
         //destroy the player
         _playerExploding = true;
-        _AudioSource.clip = _explosionClip;
-        _AudioSource.Play();
+        if (_AudioSource.enabled == true)
+        {
+            _AudioSource.clip = _explosionClip;
+            _AudioSource.Play();
+        }
         Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
         Destroy(this.gameObject);
 

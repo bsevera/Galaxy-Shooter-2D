@@ -8,7 +8,7 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyPrefab;
 
     [SerializeField]
-    private float _enemySpawnRate = 4.8f; //was 5.0f
+    private float _enemySpawnRate = 5.4f; //was 5.0f
     private WaitForSeconds _enemySpawnRateSeconds;
     
     private float _powerupSpawnRate;
@@ -107,7 +107,7 @@ public class SpawnManager : MonoBehaviour
 
         _enemiesKilledThisWave = 0;
         _enemiesSpawnedThisWave = 0;
-        _enemySpawnRate += .2f;
+        _enemySpawnRate -= .4f;
 
         StartCoroutine(SpawnEnemyRoutine(_enemiesPerWave[_currentWave]));
         //StartCoroutine(SpawnPowerupRoutine());
@@ -185,7 +185,7 @@ public class SpawnManager : MonoBehaviour
         {
             //create a wider range of numbers, so there is more variety in the powerups displayed
             randomValue = Random.Range(0, _powerups.Length * 100);
-            powerUpToSpawn = randomValue % _powerups.Length;
+            powerUpToSpawn = randomValue % _powerups.Length;            
 
             if (IsReadyToSpawn(powerUpToSpawn, _powerups[powerUpToSpawn].GetComponent<Powerup>().Rarity))
             {

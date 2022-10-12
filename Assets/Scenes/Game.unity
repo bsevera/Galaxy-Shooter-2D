@@ -791,6 +791,7 @@ MonoBehaviour:
   - {fileID: 3898666730099223640, guid: f478901275852be48a23aba7d7643539, type: 3}
   - {fileID: 9079517196580784442, guid: 5191a793422b99344aa13bd33aaf6f86, type: 3}
   - {fileID: 4839469910875997486, guid: bc1db3b9f2cf2df41a3e61075c1b1ec4, type: 3}
+  - {fileID: 6668176369959159069, guid: ecf1e43441d7339498a6d81ce1244d28, type: 3}
 --- !u!4 &545414120
 Transform:
   m_ObjectHideFlags: 0
@@ -1200,6 +1201,7 @@ MonoBehaviour:
   _powerUpAudioClip: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
   _shieldsDownClip: {fileID: 8300000, guid: 8995e397fe2484948835e2b27705c078, type: 3}
   _noAmmoClip: {fileID: 8300000, guid: 3c29e4cd480c25e4bb129138baec5ff6, type: 3}
+  _loseAllAmmoClip: {fileID: 8300000, guid: 90c2ac09ce8b7944286f20e2b15d38fd, type: 3}
   _score: 0
   _maxAmmo: 30
 --- !u!212 &768586561
