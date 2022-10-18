@@ -5,5 +5,8 @@ public enum LaserDirection
     UpperLeft,
     Up,
     UpperRight,
-    Right
+    Right,
+    Down,
+    DownLeft,
+    DownRight
 }

@@ -233,10 +233,15 @@ public class Player : MonoBehaviour
     public void SpeedBoostActive()
     {
         PlayPowerUpSoundEffect();
-        ShowThrusterImage(true);
-        _speedBoostIsActive = true;
-        _speed *= _speedMultiplier;        
-        StartCoroutine(PowerDownSpeedBoost());        
+
+        //don't activate speed boost if it is already active
+        if (_speedBoostIsActive == false)
+        {
+            ShowThrusterImage(true);
+            _speedBoostIsActive = true;
+            _speed *= _speedMultiplier;
+            StartCoroutine(PowerDownSpeedBoost());
+        }
     }
 
     public void ShieldsActive()

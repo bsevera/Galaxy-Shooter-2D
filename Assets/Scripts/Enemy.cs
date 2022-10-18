@@ -58,7 +58,17 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Enemy :: Spawn Manager is null");
         }
 
-        _animator = GetComponent<Animator>();
+
+        if (this.gameObject.transform.childCount == 1)
+        {
+            //if game object has a child object holding the sprite, get the animator on that child object
+            _animator = transform.GetChild(0).GetComponent<Animator>();
+        }
+        else
+        {
+            _animator = GetComponent<Animator>();
+        }
+
         if (_animator == null)
         {
             Debug.LogError("Animator component of enemy object is null");
@@ -147,12 +157,12 @@ public class Enemy : MonoBehaviour
     {
         Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y - 1.05f, 0);
         GameObject enemyLaser = Instantiate(_enemyLaserPrefab, laserStartingPosition, Quaternion.identity);
-        Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
+        //Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
 
-        for (int i = 0; i < lasers.Length; i++)
-        {
-            lasers[i].AssignEnemyLaser();
-        }
+        //for (int i = 0; i < lasers.Length; i++)
+        //{
+        //    lasers[i].AssignEnemyLaser();
+        //}
     }
 
     private void OnTriggerEnter2D(Collider2D other)

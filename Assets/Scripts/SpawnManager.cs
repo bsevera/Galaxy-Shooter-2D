@@ -6,6 +6,8 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject _enemyPrefab;
+    [SerializeField]
+    private GameObject _enemyBluePrefab;
 
     [SerializeField]
     private float _enemySpawnRate = 5.4f; //was 5.0f
@@ -124,6 +126,26 @@ public class SpawnManager : MonoBehaviour
         _stopSpawning = true;
     }
 
+    private void SpawnNewEnemy()
+    {
+        int enemyToSpawn = Random.Range(0, 2);
+        GameObject newEnemy = null;
+
+        if (enemyToSpawn == 0)
+        {
+            Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
+            newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
+        }
+        else 
+        {
+            Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
+            newEnemy = Instantiate(_enemyBluePrefab, enemyStartingPosition, Quaternion.identity);
+        }
+
+        newEnemy.transform.parent = _enemyContainer.transform;
+
+    }
+
     IEnumerator SpawnEnemyRoutine(int enemiesToSpawn)
     {
         //wait 3 seconds before starting the spawn
@@ -135,13 +157,13 @@ public class SpawnManager : MonoBehaviour
         {
             if (_enemiesSpawnedThisWave < enemiesToSpawn)
             {
-
+                SpawnNewEnemy();
                 //instantiate enemy object
                 _enemiesSpawnedThisWave += 1;
-                Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
-                GameObject newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
+                //Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
+                //GameObject newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
 
-                newEnemy.transform.parent = _enemyContainer.transform;
+                //newEnemy.transform.parent = _enemyContainer.transform;
 
                 //wait to spawn next enemy
                 yield return _enemySpawnRateSeconds;

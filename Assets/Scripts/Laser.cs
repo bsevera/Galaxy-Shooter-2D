@@ -10,21 +10,22 @@ public class Laser : MonoBehaviour
     [SerializeField]
     private LaserDirection _laserDirection;
 
-    private bool _isEnemyLaser = false;
+    //private bool _isEnemyLaser = false;
 
 
     // Update is called once per frame
     void Update()
     {
+        MoveLaser();
 
-        if (_isEnemyLaser)
-        {
-            MoveDown();
-        }
-        else
-        {
-            MoveLaser();            
-        }
+        //if (_isEnemyLaser)
+        //{
+        //    MoveDown();
+        //}
+        //else
+        //{
+        //    MoveLaser();            
+        //}
 
     }
 
@@ -47,6 +48,15 @@ public class Laser : MonoBehaviour
             case LaserDirection.Right:
                 MoveRight();
                 break;
+            case LaserDirection.Down:
+                MoveDown();
+                break;
+            case LaserDirection.DownLeft:
+                MoveDownLeft();
+                break;
+            case LaserDirection.DownRight:
+                MoveDownRight();
+                break;
         }
     }
 
@@ -55,7 +65,7 @@ public class Laser : MonoBehaviour
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
 
         //if position on the Y is less than -4, destroy the object
-        if (transform.position.y < -4)
+        if (transform.position.y < -8)
         {
             if (this.transform.parent != null)
             {
@@ -66,7 +76,48 @@ public class Laser : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+    }
 
+    private void MoveDownLeft()
+    {        
+        Vector3 newPosition = VectorFromAngle(180);
+        transform.Translate(newPosition * _speed * Time.deltaTime, Space.World);
+
+        if (transform.position.x < -9 || transform.position.y < -8)
+        {
+
+            if (this.transform.parent.gameObject.transform.childCount == 1)
+            {
+                GameObject myParent = this.transform.parent.gameObject;
+                Destroy(myParent);
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+
+        }
+
+    }
+
+    private void MoveDownRight()
+    {
+        Vector3 newPosition = VectorFromAngle(-45);
+        transform.Translate(newPosition * _speed * Time.deltaTime, Space.World);
+
+        if (transform.position.x > 9 || transform.position.y < -8) 
+        {
+            
+            if (this.transform.parent.gameObject.transform.childCount == 1)
+            {
+                GameObject myParent = this.transform.parent.gameObject;
+                Destroy(myParent);
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+        }
     }
 
     private void MoveLeft()
@@ -140,7 +191,7 @@ public class Laser : MonoBehaviour
 
     public void AssignEnemyLaser()
     {
-        _isEnemyLaser = true;
+        //_isEnemyLaser = true;
     }
 
     public void StopLaserMovement()

@@ -22,7 +22,7 @@ public class Powerup : MonoBehaviour
 
     [SerializeField]
     private AudioClip _audioClip;
-    
+
     //ID for powerups
     //0 = triple shot
     //1 = speed
@@ -109,5 +109,6 @@ public class Powerup : MonoBehaviour
             Destroy(this.gameObject);
 
         }
+
     }
 }
