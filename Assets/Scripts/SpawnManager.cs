@@ -176,38 +176,16 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    //original spawn routine
-    //IEnumerator SpawnEnemyRoutine()
-    //{
-    //    //wait 3 seconds before starting the spawn
-    //    yield return new WaitForSeconds(3.0f);
-
-    //    while (_stopSpawning == false) 
-    //    {
-    //        //instantiate enemy object            
-    //        Vector3 enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
-    //        GameObject newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
-
-    //        newEnemy.transform.parent = _enemyContainer.transform;
-
-    //        //wait for 5 seconds
-    //        yield return _enemySpawnRateSeconds;
-    //    }
-    //}
-
     IEnumerator SpawnPowerupRoutine()
     {
         yield return new WaitForSeconds(3.0f);
 
-        //int powerUpToSpawn = Random.Range(0, powerups.Length);
-        int randomValue = -1;
         int powerUpToSpawn = -1;
 
         while (_stopSpawning == false)
         {
             //create a wider range of numbers, so there is more variety in the powerups displayed
-            randomValue = Random.Range(0, _powerups.Length * 100);
-            powerUpToSpawn = randomValue % _powerups.Length;            
+            powerUpToSpawn = Random.Range(0, _powerups.Length);
 
             if (IsReadyToSpawn(powerUpToSpawn, _powerups[powerUpToSpawn].GetComponent<Powerup>().Rarity))
             {
@@ -233,6 +211,46 @@ public class SpawnManager : MonoBehaviour
             }
         }
     }
+
+    //IEnumerator SpawnPowerupRoutine()
+    //{
+    //    yield return new WaitForSeconds(3.0f);
+
+    //    //int powerUpToSpawn = Random.Range(0, powerups.Length);
+    //    //int randomValue = -1;
+    //    int powerUpToSpawn = -1;
+
+    //    while (_stopSpawning == false)
+    //    {
+    //        //create a wider range of numbers, so there is more variety in the powerups displayed
+    //        powerUpToSpawn = Random.Range(0, _powerups.Length);
+    //        //randomValue = Random.Range(0, _powerups.Length * 100);
+    //        //powerUpToSpawn = randomValue % _powerups.Length;            
+
+    //        if (IsReadyToSpawn(powerUpToSpawn, _powerups[powerUpToSpawn].GetComponent<Powerup>().Rarity))
+    //        {
+    //            //instantiate the new powerup
+    //            Vector3 powerUpStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
+    //            GameObject newPowerup = Instantiate(_powerups[powerUpToSpawn], powerUpStartingPosition, Quaternion.identity);
+
+    //            _powerupSpawnRate = Random.Range(3.0f, 7.0f);
+
+    //            //reset the value of the rarity monitor back to 0
+    //            _powerupRarityMonitor[powerUpToSpawn] = 0;
+
+    //            yield return new WaitForSeconds(_powerupSpawnRate);
+
+    //        }
+    //        else
+    //        {
+    //            //increase the count to simulate the rareness
+    //            _powerupRarityMonitor[powerUpToSpawn] += 1;
+
+    //            //wait before attempting to spawn another powerup
+    //            yield return new WaitForSeconds(1.5f);
+    //        }
+    //    }
+    //}
 
 
     private bool IsReadyToSpawn(int powerupID, PowerupRarity rarity)
