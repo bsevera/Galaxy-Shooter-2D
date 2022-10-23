@@ -3363,6 +3363,8 @@ MonoBehaviour:
   _speed: 3
   _enemyLaserPrefab: {fileID: 0}
   _MovementPattern: 0
+  _IsShieldsActive: 0
+  _shields: {fileID: 0}
 --- !u!1001 &2391345137618322709
 PrefabInstance:
   m_ObjectHideFlags: 0

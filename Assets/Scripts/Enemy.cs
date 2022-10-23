@@ -33,6 +33,11 @@ public class Enemy : MonoBehaviour
     private float _phase;
     private float _distanceY;
 
+    [SerializeField]
+    private bool _IsShieldsActive = false;
+    [SerializeField]
+    private GameObject _shields;
+
     private void Awake()
     {
         //randomly assign the movement pattern
@@ -45,46 +50,28 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //get a reference to the player object
-        _player = GameObject.Find("Player").GetComponent<Player>();
-        if (_player == null)
-        {
-            Debug.LogError("Player object is null");
-        }
+        GetPlayerReference();
 
-        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
-        if (_spawnManager == null)
-        {
-            Debug.LogError("Enemy :: Spawn Manager is null");
-        }
+        GetSpawnManagerReference();
 
+        GetAnimatorReferences();
 
-        if (this.gameObject.transform.childCount == 1)
-        {
-            //if game object has a child object holding the sprite, get the animator on that child object
-            _animator = transform.GetChild(0).GetComponent<Animator>();
-        }
-        else
-        {
-            _animator = GetComponent<Animator>();
-        }
-
-        if (_animator == null)
-        {
-            Debug.LogError("Animator component of enemy object is null");
-        }
-
-        _audioSource = GetComponent<AudioSource>();
-        if (_audioSource == null)
-        {
-            Debug.LogError("Enemy::Audio Source is null");
-        }
+        GetAudioSourceReference();
 
         if (_MovementPattern == EnemyMovementPattern.ZigZagDown)
         {
             _spawnTime = Time.time;
             _frequency = (float)(Math.PI * UnityEngine.Random.Range(0.16f, 0.64f));
             _phase = UnityEngine.Random.Range(0f, 2f);
+        }
+
+        //if the enemy ship has shields assigned to it, randomly assign whether the shield will be turned on
+        if (HasShields())
+        {
+            if (UnityEngine.Random.Range(0, 2) == 1)
+            {
+                EnableShields();
+            }
         }
 
         //position object at the top of the screen
@@ -97,7 +84,6 @@ public class Enemy : MonoBehaviour
     {
         CalculateMovement();
 
-
         if ((Time.time > _canFire) && _enemyIsDestroyed == false)
         {
             _fireRate = UnityEngine.Random.Range(2f, 4f);
@@ -105,6 +91,89 @@ public class Enemy : MonoBehaviour
             FireLaser();            
         }
     }
+
+    #region Get Startup References
+
+    private void GetAudioSourceReference()
+    {
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            Debug.LogError("Enemy::Audio Source is null");
+        }
+    }
+
+    private void GetSpawnManagerReference()
+    {
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        if (_spawnManager == null)
+        {
+            Debug.LogError("Enemy :: Spawn Manager is null");
+        }
+    }
+
+    private void GetPlayerReference()
+    {
+        //get a reference to the player object
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("Player object is null");
+        }
+    }
+
+    private void GetAnimatorReferences()
+    {
+        if (HasShields())
+        {
+            _animator = GetComponent<Animator>();
+        }
+        else
+        {
+            if (this.gameObject.transform.childCount == 1)
+            {
+                //if game object has a child object holding the sprite, get the animator on that child object
+                _animator = transform.GetChild(0).GetComponent<Animator>();
+            }
+            else
+            {
+                _animator = GetComponent<Animator>();
+            }
+        }
+
+        if (_animator == null)
+        {
+            Debug.LogError("Animator component of enemy object is null");
+        }
+
+    }
+    #endregion
+
+    #region Shields Methods
+    private void EnableShields()
+    {
+        _IsShieldsActive = true;
+        _shields.SetActive(true);
+    }
+
+    private void DisableShields()
+    {
+        _IsShieldsActive = false;
+        _shields.SetActive(false);
+    }
+
+    private bool HasShields()
+    {
+        if (_shields != null)
+        { 
+            return true; 
+        }
+        else 
+        {
+            return false; 
+        }
+    }
+    #endregion
 
     private void CalculateMovement()
     {
@@ -157,12 +226,6 @@ public class Enemy : MonoBehaviour
     {
         Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y - 1.05f, 0);
         GameObject enemyLaser = Instantiate(_enemyLaserPrefab, laserStartingPosition, Quaternion.identity);
-        //Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
-
-        //for (int i = 0; i < lasers.Length; i++)
-        //{
-        //    lasers[i].AssignEnemyLaser();
-        //}
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -175,18 +238,26 @@ public class Enemy : MonoBehaviour
             //damage the player
             if (player != null)
             {
-                _spawnManager.OnEnemyKilled();                
                 player.Damage();
+
+                if (HasShields() && _IsShieldsActive)
+                {
+                    DisableShields();
+                }
+                else
+                {
+                    _spawnManager.OnEnemyKilled();
+
+                    //set speed to 0 before starting the animation
+                    _speed = 0f;
+
+                    //destroy animation
+                    _animator.SetTrigger("OnEnemyDeath");
+
+                    //destroy us
+                    DestroyUs();
+                }
             }
-
-            //set speed to 0 before starting the animation
-            _speed = 0f;
-
-            //destroy animation
-            _animator.SetTrigger("OnEnemyDeath");
-
-            //destroy us
-            DestroyUs();            
         }
 
         if (other.tag == "Laser")
@@ -210,23 +281,31 @@ public class Enemy : MonoBehaviour
                 Destroy(other.gameObject);
             }
 
-            //add 10 to score
-            if (_player != null)
+            //check to see if shield is active
+            if (HasShields() && _IsShieldsActive)
             {
-                _player.IncreaseScore(10);
+                DisableShields();
             }
-            _spawnManager.OnEnemyKilled();
+            else
+            {
+                //add 10 to score
+                if (_player != null)
+                {
+                    _player.IncreaseScore(10);
+                }
+                _spawnManager.OnEnemyKilled();
 
-            _enemyIsDestroyed = true;
+                _enemyIsDestroyed = true;
 
-            //set speed to 0 before starting the animation
-            _speed = 0f;
+                //set speed to 0 before starting the animation
+                _speed = 0f;
 
-            //destroy animation
-            _animator.SetTrigger("OnEnemyDeath");
+                //destroy animation
+                _animator.SetTrigger("OnEnemyDeath");
 
-            //destroy us
-            DestroyUs();            
+                //destroy us
+                DestroyUs();
+            }
         }
     }
 
