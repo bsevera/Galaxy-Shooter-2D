@@ -38,6 +38,16 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject _shields;
 
+    [SerializeField]
+    private EnemyType _enemyType;
+
+    [SerializeField]
+    private GameObject _AggressorDetectorPrefab;
+    private GameObject _detector;
+
+    [SerializeField]
+    private float _rammingSpeed = 6.0f;
+
     private void Awake()
     {
         //randomly assign the movement pattern
@@ -72,6 +82,12 @@ public class Enemy : MonoBehaviour
             {
                 EnableShields();
             }
+        }
+
+        //if enemy is an aggressor, instantiate the detector object at the same location as the enemy
+        if (_enemyType == EnemyType.Aggressor)
+        {
+            _detector = Instantiate(_AggressorDetectorPrefab, transform.position, Quaternion.identity);
         }
 
         //position object at the top of the screen
@@ -177,6 +193,11 @@ public class Enemy : MonoBehaviour
 
     private void CalculateMovement()
     {
+        if (_enemyType == EnemyType.Aggressor)
+        {
+            MoveAggressively();
+        }
+
         if (_MovementPattern == EnemyMovementPattern.Down)
         {
             MoveDown();
@@ -184,6 +205,33 @@ public class Enemy : MonoBehaviour
         else
         {
             MoveZigZagDown();
+        }
+    }
+
+    private void MoveAggressively()
+    {
+        if (_detector != null)
+        {
+            //set position of detector object to be that of the enemy
+            _detector.transform.position = transform.position;
+
+            //get the player detector script from the detector object
+            Detection playerDector = _detector.GetComponent<Detection>();
+
+            if (playerDector != null)
+            {
+                if (playerDector.PlayerDetected)
+                {
+                    //calculate the direction and angle to the player object
+                    //Vector3 playerDirection = _player.transform.position - transform.position;
+                    //float angle = Mathf.Atan2(playerDirection.y, playerDirection.x) * Mathf.Rad2Deg + 90f;
+
+                    //rotate the enemy toward the player
+
+                    float step = _rammingSpeed * Time.deltaTime;
+                    transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, step);
+                }
+            }
         }
     }
 
@@ -230,6 +278,7 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+
         if (other.tag == "Player")
         {
             //get player object
@@ -313,6 +362,14 @@ public class Enemy : MonoBehaviour
     {
 
         _audioSource.Play();
+
+        if (_enemyType == EnemyType.Aggressor)
+        {
+            if (_detector != null)
+            {
+                Destroy(_detector);
+            }
+        }
 
         //fix to not allow destroyed enemy to be hit again        
         Destroy(GetComponent<Collider2D>());
