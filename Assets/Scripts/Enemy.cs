@@ -222,14 +222,17 @@ public class Enemy : MonoBehaviour
             {
                 if (playerDector.PlayerDetected)
                 {
-                    //calculate the direction and angle to the player object
-                    //Vector3 playerDirection = _player.transform.position - transform.position;
-                    //float angle = Mathf.Atan2(playerDirection.y, playerDirection.x) * Mathf.Rad2Deg + 90f;
+                    if (_player != null && _player.transform.position.y < transform.position.y)
+                    {
+                        //calculate the direction and angle to the player object
+                        //Vector3 playerDirection = _player.transform.position - transform.position;
+                        //float angle = Mathf.Atan2(playerDirection.y, playerDirection.x) * Mathf.Rad2Deg + 90f;
 
-                    //rotate the enemy toward the player
+                        //rotate the enemy toward the player
 
-                    float step = _rammingSpeed * Time.deltaTime;
-                    transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, step);
+                        float step = _rammingSpeed * Time.deltaTime;
+                        transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, step);
+                    }
                 }
             }
         }

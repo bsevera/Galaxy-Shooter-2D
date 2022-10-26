@@ -122,7 +122,7 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnNewEnemy()
     {
-        int enemyToSpawn = Random.Range(0, 3);
+        int enemyToSpawn = Random.Range(2, 3);
         GameObject newEnemy = null;
         Vector3 enemyStartingPosition;
 

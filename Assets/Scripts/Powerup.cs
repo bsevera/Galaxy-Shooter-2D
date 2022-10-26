@@ -35,11 +35,37 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private int powerupID;
 
+    [SerializeField]
+    private float _collectionSpeed = 8.0f;
+    private Player _player;
+
     // Start is called before the first frame update
     void Start()
     {
+        GetPlayerReference();
+
         //position object at the top of the screen
         SetStartPosition();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (transform.position.y > _bottomOfScreen)
+        {
+            if (Input.GetKey(KeyCode.C))
+            {
+                MoveTowardPlayer();
+            }
+
+            //move the object            
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        }
+        else
+        {
+            //if object moves off of the bottom of screen, destroy it
+            Destroy(this.gameObject);
+        }
     }
 
     private void SetStartPosition()
@@ -49,19 +75,24 @@ public class Powerup : MonoBehaviour
         transform.position = new Vector3(randomX, _topOfScreen, 0);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void GetPlayerReference()
     {
-        if (transform.position.y > _bottomOfScreen)
+        //get a reference to the player object
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
         {
-            //move the object            
-            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+            Debug.LogError("Player object is null");
         }
-        else
+    }
+
+    private void MoveTowardPlayer()
+    {
+        if (_player != null)
         {
-            //if object moves off of the bottom of screen, destroy it
-            Destroy(this.gameObject);
+            float step = _collectionSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, step);
         }
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
