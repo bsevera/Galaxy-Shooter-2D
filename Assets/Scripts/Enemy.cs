@@ -9,6 +9,12 @@ public class Enemy : MonoBehaviour
     private float _speed = 4.0f;
 
     [SerializeField]
+    private float _dodgeSpeed = 5.0f;
+
+    [SerializeField]
+    private float _rammingSpeed = 6.0f;
+
+    [SerializeField]
     private GameObject _enemyLaserPrefab;
 
     private float _bottomOfScreen = -5.4f;
@@ -42,11 +48,11 @@ public class Enemy : MonoBehaviour
     private EnemyType _enemyType;
 
     [SerializeField]
-    private GameObject _AggressorDetectorPrefab;
-    private GameObject _detector;
+    private GameObject _detectorPrefab;
 
     [SerializeField]
-    private float _rammingSpeed = 6.0f;
+    private DetectionType _detectionType;
+    private GameObject _detector;
 
     private void Awake()
     {
@@ -84,11 +90,12 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        //if enemy is an aggressor, instantiate the detector object at the same location as the enemy
-        if (_enemyType == EnemyType.Aggressor)
-        {
-            _detector = Instantiate(_AggressorDetectorPrefab, transform.position, Quaternion.identity);
-        }
+        GetDetectorReference();
+
+        //if (_enemyType == EnemyType.Aggressor)
+        //{
+        //    _detector = Instantiate(_AggressorDetectorPrefab, transform.position, Quaternion.identity);
+        //}
 
         //position object at the top of the screen
         SetStartPosition();
@@ -109,6 +116,22 @@ public class Enemy : MonoBehaviour
     }
 
     #region Get Startup References
+
+    private void GetDetectorReference()
+    {
+        if (_detectionType != DetectionType.None)
+        {
+            if (_detectorPrefab != null)
+            {
+                _detector = Instantiate(_detectorPrefab, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Debug.LogError("Enemy :: Detection Type is not None :: Detector is null");
+            }
+        }
+
+    }
 
     private void GetAudioSourceReference()
     {
@@ -193,6 +216,19 @@ public class Enemy : MonoBehaviour
 
     private void CalculateMovement()
     {
+        if (_detectionType == DetectionType.Laser)
+        {            
+            if (_detector != null)
+            {
+                //move detector object with the enemy
+                _detector.transform.position = transform.position;
+                if (_detector.GetComponent<Detection>().LaserDetected)
+                {                    
+                    AvoidLaser();
+                }
+            }
+        }
+
         if (_enemyType == EnemyType.Aggressor)
         {
             MoveAggressively();
@@ -205,6 +241,23 @@ public class Enemy : MonoBehaviour
         else
         {
             MoveZigZagDown();
+        }
+    }
+
+    private void AvoidLaser()
+    {
+        //randomly decide the direction to move
+        int direction = UnityEngine.Random.Range(0, 2);
+
+        if (direction == 0)
+        {
+            //move left
+            transform.Translate(Vector3.left * _dodgeSpeed * Time.deltaTime);
+        }
+        else
+        {
+            //move right
+            transform.Translate(Vector3.right * _dodgeSpeed * Time.deltaTime);
         }
     }
 
@@ -363,10 +416,10 @@ public class Enemy : MonoBehaviour
 
     private void DestroyUs()
     {
-
         _audioSource.Play();
 
-        if (_enemyType == EnemyType.Aggressor)
+        if (_detectionType != DetectionType.None)
+        //if (_enemyType == EnemyType.Aggressor)
         {
             if (_detector != null)
             {
@@ -377,8 +430,7 @@ public class Enemy : MonoBehaviour
         //fix to not allow destroyed enemy to be hit again        
         Destroy(GetComponent<Collider2D>());
 
-        Destroy(this.gameObject, 2.8f);
-        
+        Destroy(this.gameObject, 2.8f);        
     }
 
 }

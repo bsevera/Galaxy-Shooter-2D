@@ -54,7 +54,9 @@ MonoBehaviour:
   _IsShieldsActive: 0
   _shields: {fileID: 0}
   _enemyType: 2
-  _AggressorDetectorPrefab: {fileID: 8073751685775529646, guid: 65e64b4244a0545498a8d5d75dd4d6ff, type: 3}
+  _detectorPrefab: {fileID: 8073751685775529646, guid: 65e64b4244a0545498a8d5d75dd4d6ff, type: 3}
+  _detectionType: 2
+  _rammingSpeed: 6
 --- !u!50 &9191152818697024590
 Rigidbody2D:
   serializedVersion: 4
