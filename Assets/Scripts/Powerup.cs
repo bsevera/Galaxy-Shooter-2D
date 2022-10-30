@@ -5,6 +5,9 @@ using UnityEngine;
 public class Powerup : MonoBehaviour
 {
     [SerializeField]
+    private GameObject _explosionPrefab;
+
+    [SerializeField]
     private PowerupRarity _rarity;
 
     public PowerupRarity Rarity
@@ -139,6 +142,24 @@ public class Powerup : MonoBehaviour
             //destroy us
             Destroy(this.gameObject);
 
+        }
+
+        if (other.tag == "EnemyLaser")
+        {
+            if (other.transform.parent != null)
+            {
+                //triple shot - destroy parent
+                Destroy(other.transform.parent.gameObject);
+            }
+            else
+            {
+                //standard laser
+                Destroy(other.gameObject);
+            }
+
+            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+
+            Destroy(this.gameObject, 0.25f);
         }
 
     }

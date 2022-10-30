@@ -107,6 +107,18 @@ public class Enemy : MonoBehaviour
     {
         CalculateMovement();
 
+        //if detection type = powerup or powerup and laser
+        if (_detectionType == DetectionType.Powerup || _detectionType == DetectionType.PowerupAndLaser)
+        {
+            if (_detector != null)
+            {
+                if (_detector.GetComponent<Detection>().PowerupDetected)
+                {
+                    FireLaser();
+                }
+            }
+        }
+
         if ((Time.time > _canFire) && _enemyIsDestroyed == false)
         {
             _fireRate = UnityEngine.Random.Range(2f, 4f);
@@ -216,7 +228,7 @@ public class Enemy : MonoBehaviour
 
     private void CalculateMovement()
     {
-        if (_detectionType == DetectionType.Laser)
+        if (_detectionType == DetectionType.Laser || _detectionType == DetectionType.PowerupAndLaser)
         {            
             if (_detector != null)
             {

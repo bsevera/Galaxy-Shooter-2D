@@ -51,14 +51,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 4
+  _dodgeSpeed: 5
+  _rammingSpeed: 6
   _enemyLaserPrefab: {fileID: 5917471559896185413, guid: a9610665aa6a94643b40a1a9e351f6bd, type: 3}
   _MovementPattern: 0
   _IsShieldsActive: 0
   _shields: {fileID: 3798800684161674976}
   _enemyType: 0
   _detectorPrefab: {fileID: 3452398058262373380, guid: f8eb80790dadba347955bdb142d8f2e8, type: 3}
-  _detectionType: 1
-  _rammingSpeed: 6
+  _detectionType: 3
 --- !u!212 &-4900260623022203078
 SpriteRenderer:
   m_ObjectHideFlags: 0

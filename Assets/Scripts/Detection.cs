@@ -15,6 +15,12 @@ public class Detection : MonoBehaviour
         get { return _laserDetected; }
     }
 
+    private bool _powerupDetected;
+    public bool PowerupDetected
+    {
+        get { return _powerupDetected; }
+    }
+
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.tag == "Player")
@@ -25,6 +31,11 @@ public class Detection : MonoBehaviour
         if (other.tag == "Laser")
         {
             _laserDetected = true;
+        }
+
+        if (other.tag == "Powerup")
+        {
+            _powerupDetected = true;
         }
     }
 
@@ -38,6 +49,11 @@ public class Detection : MonoBehaviour
         if (other.tag == "Laser")
         {
             _laserDetected = false;
+        }
+
+        if (other.tag == "Powerup")
+        {
+            _powerupDetected = false;
         }
     }
 

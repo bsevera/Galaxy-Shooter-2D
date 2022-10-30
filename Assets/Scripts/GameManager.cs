@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && _isGameOver)
         {
             //reload the scene            
-            SceneManager.LoadScene(1); //scene 1 = game
+            SceneManager.LoadScene(2); //scene 2 = game
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
