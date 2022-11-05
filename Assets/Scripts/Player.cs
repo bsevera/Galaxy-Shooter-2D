@@ -506,15 +506,15 @@ public class Player : MonoBehaviour
 
 
 
-        //constrain the object to not move past 8 and -8 on the horizontal
+        //constrain the object to not move past 9 and -9 on the horizontal
         //constrain the object to not move past 0 and -3.5 on the vertical
-        if (transform.position.x >= 8)
+        if (transform.position.x >= 9)
         {
-            transform.position = new Vector3(8, transform.position.y, 0);
+            transform.position = new Vector3(9, transform.position.y, 0);
         }
-        else if (transform.position.x <= -8)
+        else if (transform.position.x <= -9)
         {
-            transform.position = new Vector3(-8, transform.position.y, 0);
+            transform.position = new Vector3(-9, transform.position.y, 0);
         }
 
         if (transform.position.y >= 0)

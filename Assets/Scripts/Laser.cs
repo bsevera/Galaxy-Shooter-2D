@@ -189,10 +189,10 @@ public class Laser : MonoBehaviour
         _laserDirection = direction;
     }
 
-    public void AssignEnemyLaser()
-    {
-        //_isEnemyLaser = true;
-    }
+    //public void AssignEnemyLaser()
+    //{
+    //    //_isEnemyLaser = true;
+    //}
 
     public void StopLaserMovement()
     {

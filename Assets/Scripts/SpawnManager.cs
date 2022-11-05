@@ -10,6 +10,8 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyBluePrefab;
     [SerializeField]
     private GameObject _enemyAggressorPrefab;
+    [SerializeField]
+    private GameObject _enemyPinkPrefab;
 
     [SerializeField]
     private float _enemySpawnRate = 5.4f; //was 5.0f
@@ -122,24 +124,27 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnNewEnemy()
     {
-        int enemyToSpawn = Random.Range(0, 1);
+        int enemyToSpawn = Random.Range(3, 4);
         GameObject newEnemy = null;
         Vector3 enemyStartingPosition;
+
+        enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
 
         switch (enemyToSpawn)
         {
             case 0:
-                enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
                 newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
                 break;
             case 1:
-                enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
                 newEnemy = Instantiate(_enemyBluePrefab, enemyStartingPosition, Quaternion.identity);
                 break;
             case 2:
-                enemyStartingPosition = new Vector3(Random.Range(-8.0f, 8.0f), 8, 0);
                 newEnemy = Instantiate(_enemyAggressorPrefab, enemyStartingPosition, Quaternion.identity);
                 break;
+            case 3:
+                newEnemy = Instantiate(_enemyPinkPrefab, enemyStartingPosition, Quaternion.identity);
+                break;
+
         }
 
         newEnemy.transform.parent = _enemyContainer.transform;

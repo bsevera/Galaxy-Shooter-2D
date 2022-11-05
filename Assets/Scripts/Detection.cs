@@ -3,12 +3,11 @@ using UnityEngine;
 public class Detection : MonoBehaviour
 {
     private bool _playerDetected;
-
     public bool PlayerDetected
     {
         get { return _playerDetected; }
     }
-
+    
     private bool _laserDetected;
     public bool LaserDetected
     {

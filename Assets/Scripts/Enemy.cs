@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject _enemyLaserPrefab;
 
+    [SerializeField]
+    private GameObject _enemyRearLaserPrefab;
+
     private float _bottomOfScreen = -5.4f;
     private float _topOfScreen = 6.5f;
     private float _minX = -9.0f;
@@ -29,6 +32,9 @@ public class Enemy : MonoBehaviour
     private bool _enemyIsDestroyed = false;
     private float _fireRate = -1;
     private float _canFire;
+
+    private float _rearFireRate = -1;
+    private float _canFireBehind;
 
     private AudioSource _audioSource;
 
@@ -92,11 +98,6 @@ public class Enemy : MonoBehaviour
 
         GetDetectorReference();
 
-        //if (_enemyType == EnemyType.Aggressor)
-        //{
-        //    _detector = Instantiate(_AggressorDetectorPrefab, transform.position, Quaternion.identity);
-        //}
-
         //position object at the top of the screen
         SetStartPosition();
 
@@ -115,6 +116,22 @@ public class Enemy : MonoBehaviour
                 if (_detector.GetComponent<Detection>().PowerupDetected)
                 {
                     FireLaser();
+                }
+            }
+        }
+
+        if (_detectionType == DetectionType.PlayerBehind)
+        {
+            if (_detector != null)
+            {
+                if (_detector.GetComponent<Detection>().PlayerDetected)
+                {
+                    if ((Time.time > _canFireBehind) && _enemyIsDestroyed == false)
+                    {
+                        _rearFireRate = UnityEngine.Random.Range(2f, 4f);
+                        _canFireBehind = Time.time + _rearFireRate;
+                        FireRearLaser();
+                    }
                 }
             }
         }
@@ -225,9 +242,17 @@ public class Enemy : MonoBehaviour
         }
     }
     #endregion
-
+    
     private void CalculateMovement()
     {
+        if (_detectionType == DetectionType.PlayerBehind)
+        {
+            if (_detector != null)
+            {
+                _detector.transform.position = transform.position;
+            }
+        }
+
         if (_detectionType == DetectionType.Laser || _detectionType == DetectionType.PowerupAndLaser)
         {            
             if (_detector != null)
@@ -344,11 +369,19 @@ public class Enemy : MonoBehaviour
         GameObject enemyLaser = Instantiate(_enemyLaserPrefab, laserStartingPosition, Quaternion.identity);
     }
 
+    private void FireRearLaser()
+    {
+        Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.3f, 0);
+        GameObject enemyLaser = Instantiate(_enemyRearLaserPrefab, laserStartingPosition, Quaternion.identity);
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
 
         if (other.tag == "Player")
         {
+            Debug.Log("Enemy :: OnTriggerEnter2D :: Player");
+
             //get player object
             Player player = other.transform.GetComponent<Player>();
 
