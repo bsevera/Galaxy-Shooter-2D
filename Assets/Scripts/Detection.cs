@@ -20,6 +20,12 @@ public class Detection : MonoBehaviour
         get { return _powerupDetected; }
     }
 
+    private bool _enemyDetected;
+    public bool EnemyDetected
+    {
+        get { return _enemyDetected; }
+    }
+
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.tag == "Player")
@@ -35,6 +41,11 @@ public class Detection : MonoBehaviour
         if (other.tag == "Powerup")
         {
             _powerupDetected = true;
+        }
+
+        if (other.tag == "Enemy")
+        {
+            _enemyDetected = true;
         }
     }
 
@@ -53,6 +64,11 @@ public class Detection : MonoBehaviour
         if (other.tag == "Powerup")
         {
             _powerupDetected = false;
+        }
+
+        if (other.tag == "Enemy")
+        {
+            _enemyDetected = false;
         }
     }
 

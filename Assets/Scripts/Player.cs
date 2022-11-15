@@ -21,6 +21,9 @@ public class Player : MonoBehaviour
     private GameObject _tripleShotPrefab;
 
     [SerializeField]
+    private GameObject _homingMissilePrefab;
+
+    [SerializeField]
     private bool _isTripleShotActive = false;
 
     [SerializeField]
@@ -95,6 +98,8 @@ public class Player : MonoBehaviour
     private int _maxAmmo = 30;
     private int _currentAmmo;
 
+    private int _homingMissileCount = 0;    
+
     private MainCamera _mainCamera;
     private UIManager _UIManager;    
 
@@ -138,6 +143,7 @@ public class Player : MonoBehaviour
 
         _currentAmmo = _maxAmmo;
         UpdateAmmoUI();
+        UpdateHomingMissileUI();
 
     }
 
@@ -154,15 +160,32 @@ public class Player : MonoBehaviour
             }
             else if (_currentAmmo == 0 && Input.GetKeyDown(KeyCode.Space) && _isTripleShotActive == false && _isBlossomLaserActive == false && Time.time > _canFire)            
             {
-                _AudioSource.clip = _noAmmoClip;
-                _AudioSource.Play();
+                PlayNoAmmoClip();
             }
 
             if (Input.GetKeyUp(KeyCode.LeftShift))
             {
                 StartCoroutine(IncreaseFuelRoutine());
             }
+
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                if (_homingMissileCount == 0)
+                {
+                    PlayNoAmmoClip();
+                }
+                {
+                    FireHomingMissile();
+                }
+            }
         }
+    }
+
+    #region Audio Methods
+    private void PlayNoAmmoClip()
+    {
+        _AudioSource.clip = _noAmmoClip;
+        _AudioSource.Play();
     }
 
     private void PlayLoseAllAmmoSoundEffect()
@@ -176,12 +199,22 @@ public class Player : MonoBehaviour
         _AudioSource.clip = _powerUpAudioClip;
         _AudioSource.Play();
     }
-    
+
+    #endregion
+
+    #region Powerups Collected Methods
     public void LoseAllAmmoCollected()
     {
         PlayLoseAllAmmoSoundEffect();
         _currentAmmo = 0;
         UpdateAmmoUI();
+    }
+
+    public void HomingMissileCollected()
+    {
+        PlayPowerUpSoundEffect();
+        _homingMissileCount += 3;
+        UpdateHomingMissileUI();
     }
 
     public void AmmoCollected()
@@ -203,19 +236,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void RemoveDamage()
-    {
-        switch (_lives)
-        {
-            case 3:
-                _rightEngine.SetActive(false);
-                break;
-            case 2:
-                _leftEngine.SetActive(false);
-                break;
-        }
-    }
-
     public void TripleShotActive()
     {
         PlayPowerUpSoundEffect();
@@ -226,7 +246,7 @@ public class Player : MonoBehaviour
     public void BlossomLaserActive()
     {
         PlayPowerUpSoundEffect();
-        _isBlossomLaserActive = true;        
+        _isBlossomLaserActive = true;
         StartCoroutine(PowerDownBlossomLaser());
     }
 
@@ -244,6 +264,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Shields Methods
     public void ShieldsActive()
     {
         PlayPowerUpSoundEffect();
@@ -265,7 +288,6 @@ public class Player : MonoBehaviour
         SetShieldImage();
     }
 
-
     private void SetShieldImage()
     {
         switch (_shieldHealth)
@@ -282,10 +304,32 @@ public class Player : MonoBehaviour
         }
     }
 
+    #endregion
+
+    private void RemoveDamage()
+    {
+        switch (_lives)
+        {
+            case 3:
+                _rightEngine.SetActive(false);
+                break;
+            case 2:
+                _leftEngine.SetActive(false);
+                break;
+        }
+    }
+
+
+
+
+
+
     public void KilledAnEnemy()
     {
         _spawnManager.OnEnemyKilled();
     }
+
+    #region UI Update Methods
 
     public void IncreaseScore(int incomingPoints)
     {
@@ -303,6 +347,15 @@ public class Player : MonoBehaviour
             _UIManager.UpdateAmmo(_currentAmmo, _maxAmmo);
         }
     }
+
+    private void UpdateHomingMissileUI()
+    {
+        if (_UIManager != null)
+        {
+            _UIManager.UpdateHomingMissileCount(_homingMissileCount);
+        }
+    }
+    #endregion
 
     public void Damage()
     {
@@ -327,7 +380,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        //somehow player lives was getting below 0
+        //reduce lives by one if > 0
         if (_lives > 0)
         {
             _lives -= 1;
@@ -384,28 +437,6 @@ public class Player : MonoBehaviour
 
     }
 
-    //void FireLaser()
-    //{
-    //    _canFire = Time.time + _fireRate;
-
-    //    if (_isTripleShotActive)
-    //    {
-    //        Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
-    //    }        
-    //    else
-    //    {            
-    //        Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
-    //        Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
-
-    //        _currentAmmo -= 1;
-    //        UpdateAmmoUI();
-    //    }
-
-    //    //play the audio clip
-    //    _AudioSource.clip = _laserShotAudioClip;
-    //    _AudioSource.Play();
-    //}
-
     void FireLaser()
     {
         _canFire = Time.time + _fireRate;
@@ -430,6 +461,14 @@ public class Player : MonoBehaviour
         //play the audio clip
         _AudioSource.clip = _laserShotAudioClip;
         _AudioSource.Play();
+    }
+
+    private void FireHomingMissile()
+    {
+
+        Instantiate(_homingMissilePrefab, transform.position, Quaternion.identity);
+        _homingMissileCount -= 1;
+        UpdateHomingMissileUI();
     }
 
     private void FireBlossomLaser()

@@ -379,8 +379,7 @@ public class Enemy : MonoBehaviour
     {
 
         if (other.tag == "Player")
-        {
-            Debug.Log("Enemy :: OnTriggerEnter2D :: Player");
+        {            
 
             //get player object
             Player player = other.transform.GetComponent<Player>();
@@ -456,6 +455,50 @@ public class Enemy : MonoBehaviour
                 //destroy us
                 DestroyUs();
             }
+        }
+
+        if (other.tag == "HomingMissile")
+        {
+            //stop laser from moving past the enemy when it collides
+            HomingMissile homingMissile = other.transform.GetComponent<HomingMissile>();
+            if (homingMissile != null)
+            {
+                homingMissile.StopMovement();
+            }
+
+            //destroy homing missile
+            Destroy(other.gameObject);
+
+            ApplyDamage();
+        }
+    }
+
+    private void ApplyDamage()
+    {
+        //check to see if shield is active
+        if (HasShields() && _IsShieldsActive)
+        {
+            DisableShields();
+        }
+        else
+        {
+            //add 10 to score
+            if (_player != null)
+            {
+                _player.IncreaseScore(10);
+            }
+            _spawnManager.OnEnemyKilled();
+
+            _enemyIsDestroyed = true;
+
+            //set speed to 0 before starting the animation
+            _speed = 0f;
+
+            //destroy animation
+            _animator.SetTrigger("OnEnemyDeath");
+
+            //destroy us
+            DestroyUs();
         }
     }
 

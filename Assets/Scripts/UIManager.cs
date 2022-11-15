@@ -29,6 +29,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private TMP_Text _ammoText;
+
+    [SerializeField]
+    private TMP_Text _homingMissileText;
     
     private Player _player;
 
@@ -104,6 +107,15 @@ public class UIManager : MonoBehaviour
         _ammoText.text = sb.ToString();
     }
 
+    public void UpdateHomingMissileCount(int currentHomingMissileCount)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.Append("= ");
+        sb.Append(currentHomingMissileCount.ToString());
+
+        _homingMissileText.text = sb.ToString();
+    }    
+
     public void UpdateLives(int currentLives)
     {
         _livesCountImage.sprite = _liveSprites[currentLives];
@@ -142,6 +154,7 @@ public class UIManager : MonoBehaviour
 
     private void ApplyLensDistortion()
     {
+        Debug.Log("ApplyLensDistortion Started");
         _postProcessVolume = GameObject.Find("Post Process Volume").GetComponent<PostProcessVolume>();
         if( _postProcessVolume != null )
         {

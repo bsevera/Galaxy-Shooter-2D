@@ -34,6 +34,7 @@ public class Powerup : MonoBehaviour
     //4 = extra life
     //5 = blossom laser
     //6 = lose all ammo
+    //7 = Homing Missile
 
     [SerializeField]
     private int powerupID;
@@ -131,6 +132,9 @@ public class Powerup : MonoBehaviour
                         break;
                     case 6:
                         player.LoseAllAmmoCollected();
+                        break;
+                    case 7:
+                        player.HomingMissileCollected();
                         break;
                     default:
                         Debug.Log("Unknown powerupID value");
