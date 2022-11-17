@@ -154,7 +154,6 @@ public class UIManager : MonoBehaviour
 
     private void ApplyLensDistortion()
     {
-        Debug.Log("ApplyLensDistortion Started");
         _postProcessVolume = GameObject.Find("Post Process Volume").GetComponent<PostProcessVolume>();
         if( _postProcessVolume != null )
         {
@@ -188,48 +187,25 @@ public class UIManager : MonoBehaviour
         _waveText.gameObject.SetActive(false);
     }
 
-    public void IncreaseThrusterFuel()
+    #region Thruster Gauge
+    public void SetThrusterGaugeMax(float maxThrusterValue)
     {
-        _thrusterGauge.value += 0.5f;
+        _thrusterGauge.maxValue = maxThrusterValue;        
+    }
+
+    public void UpdateThrusterGauge(float currentThrusterValue)
+    {
+        _thrusterGauge.value = currentThrusterValue;
 
         if (_thrusterGauge.value > 0)
         {
             _thrusterGauge.fillRect.gameObject.SetActive(true);
         }
-    }
-
-    public void DecreaseThrusterFuel()
-    {
-        _thrusterGauge.value -= 0.2f;
-
-        if (_thrusterGauge.value == 0)
-        {
-            _thrusterGauge.fillRect.gameObject.SetActive(false);            
-        }
-    }
-
-    public bool ThrusterFuelFull()
-    {
-        if (_thrusterGauge.value == _thrusterGauge.maxValue)
-        {
-            return true;
-        }
         else
         {
-            return false;
+            _thrusterGauge.fillRect.gameObject.SetActive(false);
         }
     }
-
-    public bool ThrusterFuelEmpty()
-    {
-        if (_thrusterGauge.value == _thrusterGauge.minValue)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    #endregion
 
 }

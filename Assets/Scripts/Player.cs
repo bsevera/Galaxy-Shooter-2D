@@ -9,6 +9,11 @@ public class Player : MonoBehaviour
     private float _speed = 5f;
 
     [SerializeField]
+    private float _maxThrusterValue = 100f;
+    [SerializeField]
+    private float _currentThrusterValue;
+
+    [SerializeField]
     private float _thrusterMultiplier = 1.5f;
 
     [SerializeField]
@@ -142,8 +147,11 @@ public class Player : MonoBehaviour
         }
 
         _currentAmmo = _maxAmmo;
+        _currentThrusterValue = _maxThrusterValue;
+
         UpdateAmmoUI();
         UpdateHomingMissileUI();
+        SetThrusterUIMaxValue();        
 
     }
 
@@ -355,6 +363,16 @@ public class Player : MonoBehaviour
             _UIManager.UpdateHomingMissileCount(_homingMissileCount);
         }
     }
+
+    private void SetThrusterUIMaxValue()
+    {
+        _UIManager.SetThrusterGaugeMax(_maxThrusterValue);
+    }
+
+    private void UpdateThrusterUI()
+    {
+        _UIManager.UpdateThrusterGauge(_currentThrusterValue);
+    }
     #endregion
 
     public void Damage()
@@ -521,7 +539,7 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        if (Input.GetKey(KeyCode.LeftShift) && _UIManager.ThrusterFuelEmpty() == false)
+        if (Input.GetKey(KeyCode.LeftShift) && ThrusterFuelEmpty() == false)
         {
             transform.Translate(direction * (_speed * _thrusterMultiplier) * Time.deltaTime);
             ShowThrusterImage(true);
@@ -529,7 +547,7 @@ public class Player : MonoBehaviour
             //only decrease thruster gauge if speed boost is not active
             if (_speedBoostIsActive == false)
             {
-                _UIManager.DecreaseThrusterFuel();
+                DecreaseThrusterFuel();                
             }
         }
         else
@@ -542,8 +560,6 @@ public class Player : MonoBehaviour
                 ShowThrusterImage(false);
             }
         }
-
-
 
         //constrain the object to not move past 9 and -9 on the horizontal
         //constrain the object to not move past 0 and -3.5 on the vertical
@@ -567,10 +583,50 @@ public class Player : MonoBehaviour
 
     }
 
+    #region Thruster Methods
     private void ShowThrusterImage(bool active)
     {
         _thrusters.SetActive(active);
     }
+
+    private void IncreaseThrusterFuel()
+    {
+        _currentThrusterValue += 0.5f;
+        _UIManager.UpdateThrusterGauge(_currentThrusterValue);
+    }
+
+    private void DecreaseThrusterFuel()
+    {
+        _currentThrusterValue -= 0.2f;
+        _UIManager.UpdateThrusterGauge(_currentThrusterValue);
+    }
+
+    private bool ThrusterFuelFull()
+    {
+        if (_currentThrusterValue == _maxThrusterValue)
+        {
+            return true;  
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool ThrusterFuelEmpty()
+    {
+        if (_currentThrusterValue == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    #endregion
+
+    #region Coroutines
 
     IEnumerator PowerDownTripleShot()
     {
@@ -596,12 +652,14 @@ public class Player : MonoBehaviour
 
     IEnumerator IncreaseFuelRoutine()
     {
-        while (_UIManager.ThrusterFuelFull() == false)
+        while (ThrusterFuelFull() == false)
         {
-            _UIManager.IncreaseThrusterFuel();
+            IncreaseThrusterFuel();
             yield return new WaitForSeconds(.2f);
         }
     }
+
+    #endregion
 
     private void OnTriggerEnter2D(Collider2D other)
     {
