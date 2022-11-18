@@ -117,34 +117,10 @@ public class Player : MonoBehaviour
         //take the current position and assign it a start position of 0, 0, 0 
         transform.position = new Vector3(0, 0, 0);
 
-        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
-
-        if (_spawnManager == null)
-        {
-            Debug.LogError("spawnManager is null!");
-        }
-
-        //Find the main camera object and cache it for later
-        _mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
-        if (_mainCamera == null)
-        {
-            Debug.LogError("Camera is null");
-        }
-
-
-        //Find UIManager and cache it for later
-        _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        if (_UIManager == null)
-        {
-            Debug.Log("UIManager is null");
-        }
-
-        //get the audio component of the player and assign the audio clip for the fire laser sound
-        _AudioSource = GetComponent<AudioSource>();
-        if (_AudioSource == null)
-        {
-            Debug.LogError("Audio Source of the Player is Null");
-        }
+        GetSpawnManagerReference();
+        GetMainCameraReference();
+        GetUIManagerReference();
+        GetAudioSourceReference();
 
         _currentAmmo = _maxAmmo;
         _currentThrusterValue = _maxThrusterValue;
@@ -154,6 +130,49 @@ public class Player : MonoBehaviour
         SetThrusterUIMaxValue();        
 
     }
+
+    #region Startup References
+
+    private void GetSpawnManagerReference()
+    {
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+
+        if (_spawnManager == null)
+        {
+            Debug.LogError("spawnManager is null!");
+        }
+    }
+
+    private void GetMainCameraReference()
+    {
+        //Find the main camera object and cache it for later
+        _mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        if (_mainCamera == null)
+        {
+            Debug.LogError("Camera is null");
+        }
+    }
+
+    private void GetUIManagerReference()
+    {
+        //Find UIManager and cache it for later
+        _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_UIManager == null)
+        {
+            Debug.Log("UIManager is null");
+        }
+    }
+
+    private void GetAudioSourceReference()
+    {
+        //get the audio component of the player and assign the audio clip for the fire laser sound
+        _AudioSource = GetComponent<AudioSource>();
+        if (_AudioSource == null)
+        {
+            Debug.LogError("Audio Source of the Player is Null");
+        }
+    }
+    #endregion
 
     // Update is called once per frame
     void Update()
@@ -279,19 +298,23 @@ public class Player : MonoBehaviour
     {
         PlayPowerUpSoundEffect();
 
-        if (_IsShieldsActive)
-        {
-            if (_shieldHealth < _shieldHealthMax)
-            {
-                _shieldHealth += 1;
-            }
-        }
-        else
-        {
-            _shieldHealth = _shieldHealthMax;
-            _IsShieldsActive = true;
-            _shields.SetActive(true);
-        }
+        _shieldHealth = _shieldHealthMax;
+        _IsShieldsActive = true;
+        _shields.SetActive(true);
+
+        //if (_IsShieldsActive)
+        //{
+        //    if (_shieldHealth < _shieldHealthMax)
+        //    {
+        //        _shieldHealth += 1;
+        //    }
+        //}
+        //else
+        //{
+        //    _shieldHealth = _shieldHealthMax;
+        //    _IsShieldsActive = true;
+        //    _shields.SetActive(true);
+        //}
 
         SetShieldImage();
     }
@@ -326,11 +349,6 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-
-
-
-
-
 
     public void KilledAnEnemy()
     {
@@ -430,7 +448,6 @@ public class Player : MonoBehaviour
         _mainCamera.ShakeCamera();
 
     }
-
 
     void PlayerDied()
     {

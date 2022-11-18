@@ -185,7 +185,7 @@ public class SpawnManager : MonoBehaviour
         while (_stopSpawning == false)
         {
             //create a wider range of numbers, so there is more variety in the powerups displayed
-            powerUpToSpawn = Random.Range(0, _powerups.Length);
+            powerUpToSpawn = Random.Range(0, _powerups.Length);            
 
             if (IsReadyToSpawn(powerUpToSpawn, _powerups[powerUpToSpawn].GetComponent<Powerup>().Rarity))
             {
