@@ -22,6 +22,9 @@ public class UIManager : MonoBehaviour
     private TMP_Text _gameOverText;
 
     [SerializeField]
+    private TMP_Text _youWinText;
+
+    [SerializeField]
     private TMP_Text _restartText;
 
     [SerializeField]
@@ -32,7 +35,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private TMP_Text _homingMissileText;
-    
+
     private Player _player;
 
     [SerializeField]
@@ -40,9 +43,12 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private Slider _thrusterGauge;
-       
+
+    [SerializeField]
+    private Slider _bossHealthGauge;
+
     private GameManager _gameManager;
-    
+
     private PostProcessVolume _postProcessVolume;
     private LensDistortion _lensDistortion;
 
@@ -58,6 +64,9 @@ public class UIManager : MonoBehaviour
 
         //Ensure game over text is not displaying
         _gameOverText.gameObject.SetActive(false);
+
+        //Ensure You Win! text is not displaying
+        _youWinText.gameObject.SetActive(false);
 
         //set score to 0
         _scoreText.text = "Score: 0";
@@ -114,7 +123,7 @@ public class UIManager : MonoBehaviour
         sb.Append(currentHomingMissileCount.ToString());
 
         _homingMissileText.text = sb.ToString();
-    }    
+    }
 
     public void UpdateLives(int currentLives)
     {
@@ -130,10 +139,37 @@ public class UIManager : MonoBehaviour
     {
         _gameOverText.gameObject.SetActive(true);
         _restartText.gameObject.SetActive(true);
-        
+
         _gameManager.GameOver();
 
         StartCoroutine(GameOverFlickeringRoutine());
+    }
+
+    private void YouWin()
+    {
+        _youWinText.gameObject.SetActive(true);
+        _restartText.gameObject.SetActive(true);
+        _bossHealthGauge.gameObject.SetActive(false);
+
+        _gameManager.GameOver();
+
+        StartCoroutine(YouWinFlicker());
+    }
+
+    IEnumerator YouWinFlicker()
+    {
+        while (true)
+        {
+            if (_youWinText.IsActive())
+            {
+                _youWinText.gameObject.SetActive(false);
+            }
+            else
+            {
+                _youWinText.gameObject.SetActive(true);
+            }
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     IEnumerator GameOverFlickeringRoutine()
@@ -149,13 +185,13 @@ public class UIManager : MonoBehaviour
                 _gameOverText.gameObject.SetActive(true);
             }
             yield return new WaitForSeconds(0.5f);
-        }        
-    }    
+        }
+    }
 
     private void ApplyLensDistortion()
     {
         _postProcessVolume = GameObject.Find("Post Process Volume").GetComponent<PostProcessVolume>();
-        if( _postProcessVolume != null )
+        if (_postProcessVolume != null)
         {
             _postProcessVolume.profile.TryGetSettings(out _lensDistortion);
 
@@ -175,8 +211,8 @@ public class UIManager : MonoBehaviour
         while (_lensDistortion.intensity.value < 0)
         {
             val += 1;
-            _lensDistortion.intensity.value = val; 
-            
+            _lensDistortion.intensity.value = val;
+
             yield return new WaitForSeconds(0.05f);
         }
     }
@@ -190,7 +226,7 @@ public class UIManager : MonoBehaviour
     #region Thruster Gauge
     public void SetThrusterGaugeMax(float maxThrusterValue)
     {
-        _thrusterGauge.maxValue = maxThrusterValue;        
+        _thrusterGauge.maxValue = maxThrusterValue;
     }
 
     public void UpdateThrusterGauge(float currentThrusterValue)
@@ -208,4 +244,27 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
+    #region Boss Health Gauge
+
+    public void SetBossHealthMax(int maxHealthValue)
+    {
+        _bossHealthGauge.maxValue = maxHealthValue;
+        _bossHealthGauge.gameObject.SetActive(true);
+    }
+
+    public void UpdateBossHealth(int currentHealthValue)
+    {
+        _bossHealthGauge.value = currentHealthValue;
+
+        if (_bossHealthGauge.value > 0)
+        {
+            _bossHealthGauge.fillRect.gameObject.SetActive(true);
+        }
+        else
+        {
+            _bossHealthGauge.fillRect.gameObject.SetActive(false);
+            YouWin();
+        }
+    }
+    #endregion
 }

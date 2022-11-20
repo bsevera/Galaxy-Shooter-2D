@@ -12,6 +12,8 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyAggressorPrefab;
     [SerializeField]
     private GameObject _enemyPinkPrefab;
+    [SerializeField]
+    private GameObject _enemyBossPrefab;
 
     [SerializeField]
     private float _enemySpawnRate = 5.4f; //was 5.0f
@@ -36,6 +38,8 @@ public class SpawnManager : MonoBehaviour
     private int _enemiesKilledThisWave = 0;
     private int _currentWave = 0;
     private Coroutine _co;
+
+    private int _maxWaves = 1;
 
     public void Awake()
     {
@@ -108,8 +112,16 @@ public class SpawnManager : MonoBehaviour
         _enemiesSpawnedThisWave = 0;
         _enemySpawnRate -= .4f;
 
-        StartCoroutine(SpawnEnemyRoutine(_enemiesPerWave[_currentWave]));        
-        
+        if (_currentWave < _maxWaves)
+        {
+            StartCoroutine(SpawnEnemyRoutine(_enemiesPerWave[_currentWave]));
+        }
+        else
+        {
+            //spawn the final boss
+            StartCoroutine(SpawnEnemyRoutine(1));
+        }
+
     }
 
     public void OnEnemyKilled()
@@ -123,8 +135,9 @@ public class SpawnManager : MonoBehaviour
     }
 
     private void SpawnNewEnemy()
-    {
-        int enemyToSpawn = Random.Range(0, 4); 
+    {        
+        //int enemyToSpawn = Random.Range(0, 5);
+        int enemyToSpawn = 4;
         GameObject newEnemy = null;
         Vector3 enemyStartingPosition;
 
@@ -144,7 +157,10 @@ public class SpawnManager : MonoBehaviour
             case 3:
                 newEnemy = Instantiate(_enemyPinkPrefab, enemyStartingPosition, Quaternion.identity);
                 break;
-
+            case 4:
+                enemyStartingPosition = new Vector3(0, 11, 0);
+                newEnemy = Instantiate(_enemyBossPrefab, enemyStartingPosition, Quaternion.identity);
+                break;
         }
 
         newEnemy.transform.parent = _enemyContainer.transform;

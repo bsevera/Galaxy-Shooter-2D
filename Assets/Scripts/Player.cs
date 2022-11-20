@@ -384,7 +384,10 @@ public class Player : MonoBehaviour
 
     private void SetThrusterUIMaxValue()
     {
-        _UIManager.SetThrusterGaugeMax(_maxThrusterValue);
+        if (_UIManager != null)
+        {
+            _UIManager.SetThrusterGaugeMax(_maxThrusterValue);
+        }
     }
 
     private void UpdateThrusterUI()
