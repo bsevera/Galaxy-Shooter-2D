@@ -689,5 +689,9 @@ public class Player : MonoBehaviour
 
             Destroy(other.gameObject);
         }
+        else if (other.tag == "EnemyBossLaser")
+        {
+            Damage();
+        }
     }
 }

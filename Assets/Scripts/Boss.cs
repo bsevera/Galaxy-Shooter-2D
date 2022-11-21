@@ -29,12 +29,13 @@ public class Boss : MonoBehaviour
     private bool _healthGaugeVisible = false;
 
     [SerializeField]
-    private float _laserFireRate = 120f;
+    private float _laserFireRate = 20f;
 
     [SerializeField]
     private float _homingMissileFireRate = 15f;
 
-    private float _canFireLaser;
+    //private float _canFireLaser;
+    private bool _canFireLaser = true;
     private bool _hasStoppedMoving = false;
     private BossLaserLocation _lastLaserFired = BossLaserLocation.Left;
     
@@ -79,7 +80,6 @@ public class Boss : MonoBehaviour
 
     private void GetAudioSourceReference()
     {
-        //get the audio component of the player and assign the audio clip for the fire laser sound
         _audioSource = GetComponent<AudioSource>();
         if (_audioSource == null)
         {
@@ -121,10 +121,8 @@ public class Boss : MonoBehaviour
 
     private void WeaponsController()
     {
-        if (Time.time > _canFireLaser)
-        {            
-            _canFireLaser = Time.time + _laserFireRate;
-
+        if (_canFireLaser)
+        {
             if (_lastLaserFired == BossLaserLocation.Right)
             {
                 FireLeftLaser();
@@ -135,9 +133,33 @@ public class Boss : MonoBehaviour
                 FireRightLaser();
                 _lastLaserFired = BossLaserLocation.Right;
             }
-        }
 
+            _canFireLaser = false;
+        }
     }
+
+    //private void WeaponsController()
+    //{
+    //    Debug.Log("WeaponsController :: Time.time = " + Time.time);
+    //    Debug.Log("WeaponsController :: CanFirelaser = " + _canFireLaser.ToString());
+
+    //    if (Time.time > _canFireLaser)
+    //    {            
+    //        _canFireLaser = Time.time + _laserFireRate;
+
+    //        if (_lastLaserFired == BossLaserLocation.Right)
+    //        {
+    //            FireLeftLaser();
+    //            _lastLaserFired = BossLaserLocation.Left;
+    //        }
+    //        else
+    //        {
+    //            FireRightLaser();
+    //            _lastLaserFired = BossLaserLocation.Right;
+    //        }
+    //    }
+
+    //}
 
     private void FireLeftLaser()
     {
@@ -226,5 +248,10 @@ public class Boss : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+    }
+
+    public void LaserPoweredDown()
+    {
+        _canFireLaser = true;
     }
 }
