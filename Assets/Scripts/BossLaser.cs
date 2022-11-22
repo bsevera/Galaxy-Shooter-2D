@@ -6,9 +6,8 @@ public class BossLaser : MonoBehaviour
 {
     [SerializeField]
     private BossLaserLocation _laserLocation;
-
-    private float _timeToLive = 20.0f;
-    private float _speed = 10.0f;
+    
+    private float _speed = 20.0f;
     private float _leftLaserMaxValue = 0.24f;
     private float _leftLaserMinValue = -0.3826835f; //-45;
     private float _rightLaserMaxValue = 0.3826835f;
@@ -30,7 +29,14 @@ public class BossLaser : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CalculateMovement();
+        if (_boss != null)
+        {
+            CalculateMovement();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     #region StartUp References
@@ -211,7 +217,6 @@ public class BossLaser : MonoBehaviour
 
         while (gameObject.transform.localScale.y > 0.2f)
         {
-            //y_scale -= 0.2f;
             y_scale -= 0.12f;
 
             transform.localScale = new Vector3(0.2f, y_scale, 0.2f);

@@ -693,5 +693,11 @@ public class Player : MonoBehaviour
         {
             Damage();
         }
+        else if (other.tag == "EnemyBossHomingMissile")
+        {
+            Damage();
+
+            Destroy(other.gameObject);
+        }
     }
 }

@@ -15,9 +15,4 @@ public class Credits : MonoBehaviour
         yield return new WaitForSeconds(19f);
         SceneManager.LoadScene("MainMenu");
     }
-    //public void LoadMainMenu()
-    //{
-    //    SceneManager.LoadScene("MainMenu");
-    //}
-
 }

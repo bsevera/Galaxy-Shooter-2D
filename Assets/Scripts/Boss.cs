@@ -20,22 +20,29 @@ public class Boss : MonoBehaviour
     private float _speed = 3f;
 
     [SerializeField]
-    private int _maxBossHealth = 30;
+    private int _maxBossHealth = 60;
     private int _currentBossHealth;
+
+    [SerializeField]
+    private AudioClip _explosionClip;
+
+    [SerializeField]
+    private int _hitScoreValue;
 
     private UIManager _UIManager;
     private AudioSource _audioSource;
 
     private bool _healthGaugeVisible = false;
 
-    [SerializeField]
-    private float _laserFireRate = 20f;
+    private Player _player;
+    private Animator _animator;
 
     [SerializeField]
-    private float _homingMissileFireRate = 15f;
-
-    //private float _canFireLaser;
-    private bool _canFireLaser = true;
+    private float _homingMissileFireRate = 2.5f;
+    private float _canFireHomingMissile = 0.0f;
+    //private BossHomingMissileLocation _lastHMFired = BossHomingMissileLocation.Right;
+    
+    private bool _canFireLongLaser = true;
     private bool _hasStoppedMoving = false;
     private BossLaserLocation _lastLaserFired = BossLaserLocation.Left;
     
@@ -44,6 +51,8 @@ public class Boss : MonoBehaviour
     {
         GetUIManagerReference();
         GetAudioSourceReference();
+        GetAnimatorReference();
+        GetPlayerReference();
 
         SetStartPosition();
     }
@@ -62,7 +71,10 @@ public class Boss : MonoBehaviour
 
         if (_hasStoppedMoving)
         {
-            WeaponsController();
+            if (_player != null)
+            {
+                WeaponsController();
+            }
         }
     }
 
@@ -86,6 +98,26 @@ public class Boss : MonoBehaviour
             Debug.LogError("Boss :: Audio Source is Null");
         }
     }
+
+    private void GetAnimatorReference()
+    {
+        _animator = GetComponent<Animator>();
+        if (_animator == null)
+        {
+            Debug.LogError("Boss :: Animator is Null");
+        }
+    }
+
+    private void GetPlayerReference()
+    {
+        //get a reference to the player object
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("Boss :: Player object is null");
+        }
+    }
+
 
     #endregion
 
@@ -121,7 +153,8 @@ public class Boss : MonoBehaviour
 
     private void WeaponsController()
     {
-        if (_canFireLaser)
+        //lasers
+        if (_canFireLongLaser)
         {
             if (_lastLaserFired == BossLaserLocation.Right)
             {
@@ -134,32 +167,25 @@ public class Boss : MonoBehaviour
                 _lastLaserFired = BossLaserLocation.Right;
             }
 
-            _canFireLaser = false;
+            _canFireLongLaser = false;
+        }
+
+        //homing missile
+        if (Time.time > _canFireHomingMissile)
+        {
+            _homingMissileFireRate = 5f;
+            _canFireHomingMissile = Time.time + _homingMissileFireRate;
+
+            if (Random.Range(0, 2) == 0)
+            {
+                FireLeftHomingMissile();
+            }
+            else
+            {
+                FireRightHomingMissile();
+            }
         }
     }
-
-    //private void WeaponsController()
-    //{
-    //    Debug.Log("WeaponsController :: Time.time = " + Time.time);
-    //    Debug.Log("WeaponsController :: CanFirelaser = " + _canFireLaser.ToString());
-
-    //    if (Time.time > _canFireLaser)
-    //    {            
-    //        _canFireLaser = Time.time + _laserFireRate;
-
-    //        if (_lastLaserFired == BossLaserLocation.Right)
-    //        {
-    //            FireLeftLaser();
-    //            _lastLaserFired = BossLaserLocation.Left;
-    //        }
-    //        else
-    //        {
-    //            FireRightLaser();
-    //            _lastLaserFired = BossLaserLocation.Right;
-    //        }
-    //    }
-
-    //}
 
     private void FireLeftLaser()
     {
@@ -175,12 +201,14 @@ public class Boss : MonoBehaviour
 
     private void FireLeftHomingMissile()
     {
-
+        GameObject homingMissile = Instantiate(_bossHomingMissilePrefab);
+        homingMissile.GetComponent<BossHomingMissile>().SetLocation(BossHomingMissileLocation.Left);
     }
 
     private void FireRightHomingMissile()
     {
-
+        GameObject homingMissile = Instantiate(_bossHomingMissilePrefab);
+        homingMissile.GetComponent<BossHomingMissile>().SetLocation(BossHomingMissileLocation.Right);
     }
 
     #endregion
@@ -213,10 +241,12 @@ public class Boss : MonoBehaviour
                 Destroy(other.gameObject);
             }
 
+            _player.IncreaseScore(_hitScoreValue);
+
             ApplyDamage();
 
         }
-        else if (other.tag == "Homing Missile")
+        else if (other.tag == "HomingMissile")
         {
             HomingMissile homingMissile = other.transform.GetComponent<HomingMissile>();
             if (homingMissile != null)
@@ -226,6 +256,8 @@ public class Boss : MonoBehaviour
             
             //destroy homing missile
             Destroy(other.gameObject);
+
+            _player.IncreaseScore(_hitScoreValue);
 
             ApplyDamage();
         }
@@ -239,6 +271,12 @@ public class Boss : MonoBehaviour
         }
     }
 
+    private void PlayExplosionSoundClip()
+    {
+        _audioSource.clip = _explosionClip;
+        _audioSource.Play();
+    }
+
     private void ApplyDamage()
     {
         _currentBossHealth -= 1;
@@ -246,12 +284,20 @@ public class Boss : MonoBehaviour
 
         if (_currentBossHealth == 0)
         {
-            Destroy(this.gameObject);
+
+            //destroy animation
+            _animator.SetTrigger("OnEnemyDeath");
+
+            PlayExplosionSoundClip();
+
+            Destroy(GetComponent<Collider2D>());
+
+            Destroy(this.gameObject, 2.8f);
         }
     }
 
     public void LaserPoweredDown()
     {
-        _canFireLaser = true;
+        _canFireLongLaser = true;
     }
 }

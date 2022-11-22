@@ -119,7 +119,7 @@ public class SpawnManager : MonoBehaviour
         else
         {
             //spawn the final boss
-            StartCoroutine(SpawnEnemyRoutine(1));
+            StartCoroutine(SpawnEnemyRoutine(1));            
         }
 
     }

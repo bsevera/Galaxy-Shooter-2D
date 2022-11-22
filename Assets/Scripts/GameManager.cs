@@ -13,6 +13,11 @@ public class GameManager : MonoBehaviour
         _isGameOver = true;
     }
 
+    public void ReturnToMainMenu()
+    {
+        StartCoroutine(ReturnToMainMenuRoutine());
+    }
+
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.R) && _isGameOver)
@@ -26,5 +31,11 @@ public class GameManager : MonoBehaviour
             Application.Quit();
         }
 
+    }
+
+    private IEnumerator ReturnToMainMenuRoutine()
+    {
+        yield return new WaitForSeconds(10f);
+        SceneManager.LoadScene("MainMenu");
     }
 }

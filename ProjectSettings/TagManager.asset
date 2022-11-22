@@ -10,6 +10,7 @@ TagManager:
   - EnemyLaser
   - HomingMissile
   - EnemyBossLaser
+  - EnemyBossHomingMissile
   layers:
   - Default
   - TransparentFX

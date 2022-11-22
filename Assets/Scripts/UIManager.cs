@@ -150,10 +150,13 @@ public class UIManager : MonoBehaviour
         _youWinText.gameObject.SetActive(true);
         _restartText.gameObject.SetActive(true);
         _bossHealthGauge.gameObject.SetActive(false);
+        _restartText.gameObject.SetActive(false);
 
-        _gameManager.GameOver();
-
+        _gameManager.GameOver();        
         StartCoroutine(YouWinFlicker());
+
+        _gameManager.ReturnToMainMenu();
+
     }
 
     IEnumerator YouWinFlicker()
