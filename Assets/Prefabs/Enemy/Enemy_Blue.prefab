@@ -56,7 +56,7 @@ MonoBehaviour:
   _MovementPattern: 0
   _IsShieldsActive: 0
   _shields: {fileID: 0}
-  _enemyType: 1
+  _enemyType: 3
   _detectorPrefab: {fileID: 0}
   _detectionType: 0
 --- !u!61 &3594974243654742548

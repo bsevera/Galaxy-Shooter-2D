@@ -109,7 +109,7 @@ MonoBehaviour:
   _MovementPattern: 0
   _IsShieldsActive: 0
   _shields: {fileID: 0}
-  _enemyType: 3
+  _enemyType: 1
   _detectorPrefab: {fileID: 8792054202293016719, guid: c081e60ddf1aa0349a118f6e53fe3b99, type: 3}
   _detectionType: 3
 --- !u!82 &3957332095201725545

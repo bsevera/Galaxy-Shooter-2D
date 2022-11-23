@@ -39,7 +39,7 @@ public class SpawnManager : MonoBehaviour
     private int _currentWave = 0;
     private Coroutine _co;
 
-    private int _maxWaves = 1;
+    private int _maxWaves = 5;
 
     public void Awake()
     {
@@ -77,14 +77,17 @@ public class SpawnManager : MonoBehaviour
     }
 
     private void InitializeEnemiesPerWave()
-    {
-        _enemiesPerWave = new int[11];
+    {        
+        _enemiesPerWave = new int[_maxWaves + 1];
 
         //array[0] will equal 0 to make it easier to keep track of which wave we're on
-        for (int i = 0; i < 11; i++)
+        for (int i = 0; i < _maxWaves; i++)
         {
-            _enemiesPerWave[i] = i * 5; 
+            _enemiesPerWave[i] = i * 5;
         }
+
+        //set value for final (boss) wave
+        _enemiesPerWave[_maxWaves] = 1;
     }
 
     private void InitializePowerupRarityMonitor()
@@ -112,16 +115,10 @@ public class SpawnManager : MonoBehaviour
         _enemiesSpawnedThisWave = 0;
         _enemySpawnRate -= .4f;
 
-        if (_currentWave < _maxWaves)
+        if (_currentWave <= _maxWaves)
         {
             StartCoroutine(SpawnEnemyRoutine(_enemiesPerWave[_currentWave]));
         }
-        else
-        {
-            //spawn the final boss
-            StartCoroutine(SpawnEnemyRoutine(1));            
-        }
-
     }
 
     public void OnEnemyKilled()
@@ -134,10 +131,25 @@ public class SpawnManager : MonoBehaviour
         _stopSpawning = true;
     }
 
+    private bool IsLastWave()
+    {
+        return (_currentWave == _maxWaves);
+    }
+
     private void SpawnNewEnemy()
-    {        
-        //int enemyToSpawn = Random.Range(0, 5);
-        int enemyToSpawn = 4;
+    {
+        int enemyToSpawn = -1;
+
+        if (IsLastWave())
+        {
+            //spawn boss
+            enemyToSpawn = 4;
+        }
+        else
+        {
+            enemyToSpawn = Random.Range(0, _currentWave);
+        }
+
         GameObject newEnemy = null;
         Vector3 enemyStartingPosition;
 
@@ -149,13 +161,13 @@ public class SpawnManager : MonoBehaviour
                 newEnemy = Instantiate(_enemyPrefab, enemyStartingPosition, Quaternion.identity);
                 break;
             case 1:
-                newEnemy = Instantiate(_enemyBluePrefab, enemyStartingPosition, Quaternion.identity);
+                newEnemy = Instantiate(_enemyPinkPrefab, enemyStartingPosition, Quaternion.identity);
                 break;
             case 2:
                 newEnemy = Instantiate(_enemyAggressorPrefab, enemyStartingPosition, Quaternion.identity);
                 break;
             case 3:
-                newEnemy = Instantiate(_enemyPinkPrefab, enemyStartingPosition, Quaternion.identity);
+                newEnemy = Instantiate(_enemyBluePrefab, enemyStartingPosition, Quaternion.identity);
                 break;
             case 4:
                 enemyStartingPosition = new Vector3(0, 11, 0);
@@ -178,8 +190,8 @@ public class SpawnManager : MonoBehaviour
         {
             if (_enemiesSpawnedThisWave < enemiesToSpawn)
             {
-                SpawnNewEnemy();                
                 _enemiesSpawnedThisWave += 1;
+                SpawnNewEnemy();                
 
                 //wait to spawn next enemy
                 yield return _enemySpawnRateSeconds;

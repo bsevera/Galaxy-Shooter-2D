@@ -1,8 +1,8 @@
 public enum EnemyType
 {
     Standard,
-    Blue,
+    Pink,    
     Aggressor,
-    Pink,
+    Blue,
     Boss
 }

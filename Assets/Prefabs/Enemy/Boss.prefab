@@ -143,7 +143,7 @@ MonoBehaviour:
   _yStartPosition: 11
   _yStopPosition: 6
   _speed: 2
-  _maxBossHealth: 1
+  _maxBossHealth: 60
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
   _hitScoreValue: 10
   _homingMissileFireRate: 5
