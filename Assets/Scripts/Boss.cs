@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
+    [Header("Weapons Prefabs")]
     [SerializeField]
     private GameObject _bossLaserPrefab;
 
     [SerializeField]
     private GameObject _bossHomingMissilePrefab;
 
+
+    [Header("Weapons - Additional Settings")]
+    [SerializeField]
+    private float _homingMissileFireRate = 2.5f;
+
+
+    [Header("Movement")]
     [SerializeField]
     private float _yStartPosition = 10f;
 
@@ -19,15 +27,24 @@ public class Boss : MonoBehaviour
     [SerializeField]
     private float _speed = 3f;
 
+
+    [Header("Health")]
     [SerializeField]
     private int _maxBossHealth = 60;
     private int _currentBossHealth;
 
+
+    [Header("Destruction of Object")]
     [SerializeField]
     private AudioClip _explosionClip;
 
     [SerializeField]
+    private GameObject _explosionPrefab;
+
+    [Header("Scoring")]
+    [SerializeField]
     private int _hitScoreValue;
+
 
     private UIManager _UIManager;
     private AudioSource _audioSource;
@@ -35,12 +52,8 @@ public class Boss : MonoBehaviour
     private bool _healthGaugeVisible = false;
 
     private Player _player;
-    private Animator _animator;
 
-    [SerializeField]
-    private float _homingMissileFireRate = 2.5f;
     private float _canFireHomingMissile = 0.0f;
-    //private BossHomingMissileLocation _lastHMFired = BossHomingMissileLocation.Right;
     
     private bool _canFireLongLaser = true;
     private bool _hasStoppedMoving = false;
@@ -50,8 +63,7 @@ public class Boss : MonoBehaviour
     void Start()
     {
         GetUIManagerReference();
-        GetAudioSourceReference();
-        GetAnimatorReference();
+        GetAudioSourceReference();        
         GetPlayerReference();
 
         SetStartPosition();
@@ -99,15 +111,6 @@ public class Boss : MonoBehaviour
         }
     }
 
-    private void GetAnimatorReference()
-    {
-        _animator = GetComponent<Animator>();
-        if (_animator == null)
-        {
-            Debug.LogError("Boss :: Animator is Null");
-        }
-    }
-
     private void GetPlayerReference()
     {
         //get a reference to the player object
@@ -117,7 +120,6 @@ public class Boss : MonoBehaviour
             Debug.LogError("Boss :: Player object is null");
         }
     }
-
 
     #endregion
 
@@ -285,14 +287,21 @@ public class Boss : MonoBehaviour
         if (_currentBossHealth == 0)
         {
 
-            //destroy animation
-            _animator.SetTrigger("OnEnemyDeath");
+            Vector3 explodeFrontCenterPos = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
+            Vector3 explodeRearCenterPos = new Vector3(transform.position.x, transform.position.y - 2, transform.position.z);
+            Vector3 explodeLeftPos = new Vector3(transform.position.x - 3, transform.position.y - 2, transform.position.z);
+            Vector3 explodeRightPos = new Vector3(transform.position.x + 3, transform.position.y - 3, transform.position.z);
+
+            Instantiate(_explosionPrefab, explodeFrontCenterPos, Quaternion.identity);
+            Instantiate(_explosionPrefab, explodeLeftPos, Quaternion.identity);
+            Instantiate(_explosionPrefab, explodeRightPos, Quaternion.identity);
+            Instantiate(_explosionPrefab, explodeRearCenterPos, Quaternion.identity);
 
             PlayExplosionSoundClip();
 
             Destroy(GetComponent<Collider2D>());
 
-            Destroy(this.gameObject, 2.8f);
+            Destroy(this.gameObject, 0.25f);
         }
     }
 
@@ -300,4 +309,5 @@ public class Boss : MonoBehaviour
     {
         _canFireLongLaser = true;
     }
+
 }

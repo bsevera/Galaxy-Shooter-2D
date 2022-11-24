@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    [Header("Enemy Ship Prefabs")]
     [SerializeField]
     private GameObject _enemyPrefab;
     [SerializeField]
@@ -15,17 +16,33 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyBossPrefab;
 
+    [Header("Wave Management")]
     [SerializeField]
-    private float _enemySpawnRate = 5.4f; //was 5.0f
-    private WaitForSeconds _enemySpawnRateSeconds;
-    
-    private float _powerupSpawnRate;
+    [Min(0)]
+    [Tooltip("Max value should not exceed Max Waves - 1")]
+    private int _currentWave = 0;
+
+    [SerializeField]
+    [Min(1)]
+    private int _maxWaves = 5;
+
+
+    [Header("Other Properties")]
+    [InspectorName("Enemy Spawn Rate in Seconds")]
+    [SerializeField]
+    private float _enemySpawnRate;
 
     [SerializeField]
     private GameObject _enemyContainer;
 
     [SerializeField]
     private GameObject[] _powerups;
+
+
+
+    private WaitForSeconds _enemySpawnRateSeconds;
+    
+    private float _powerupSpawnRate;
 
     private bool _stopSpawning = false;
 
@@ -36,10 +53,9 @@ public class SpawnManager : MonoBehaviour
     private int[] _enemiesPerWave;
     private int _enemiesSpawnedThisWave = 0;
     private int _enemiesKilledThisWave = 0;
-    private int _currentWave = 0;
     private Coroutine _co;
 
-    private int _maxWaves = 5;
+    //private int _maxWaves = 5;
 
     public void Awake()
     {
@@ -147,7 +163,15 @@ public class SpawnManager : MonoBehaviour
         }
         else
         {
-            enemyToSpawn = Random.Range(0, _currentWave);
+            int maxRange = 4;
+
+            if (_currentWave < maxRange + 1)
+            {
+                maxRange = _currentWave;
+            }
+
+            enemyToSpawn = Random.Range(0, maxRange);
+            //enemyToSpawn = Random.Range(0, _currentWave);
         }
 
         GameObject newEnemy = null;

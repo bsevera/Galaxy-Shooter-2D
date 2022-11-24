@@ -101,15 +101,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ca8c2b3c4d41a648bb48a98467f5e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enemyType: 1
+  _explosionPrefab: {fileID: 3099630988076795892, guid: 275d01f12ba96b0468769a7ff3fc8d9d, type: 3}
+  _hitScoreValue: 15
+  _shieldBonusValue: 0
+  _MovementPattern: 0
   _speed: 4
   _dodgeSpeed: 5
   _rammingSpeed: 6
   _enemyLaserPrefab: {fileID: 5917471559896185413, guid: a9610665aa6a94643b40a1a9e351f6bd, type: 3}
   _enemyRearLaserPrefab: {fileID: 3675092299792117424, guid: 6f7e732e51ecb6b4c8c452a636cdf9c8, type: 3}
-  _MovementPattern: 0
   _IsShieldsActive: 0
   _shields: {fileID: 0}
-  _enemyType: 1
   _detectorPrefab: {fileID: 8792054202293016719, guid: c081e60ddf1aa0349a118f6e53fe3b99, type: 3}
   _detectionType: 3
 --- !u!82 &3957332095201725545
@@ -263,7 +266,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3957332095201725550}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 8f76c90bc2c95af4891cd10fa4497c4c, type: 2}
   m_CullingMode: 0

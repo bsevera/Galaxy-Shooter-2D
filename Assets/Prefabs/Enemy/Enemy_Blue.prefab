@@ -48,15 +48,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ca8c2b3c4d41a648bb48a98467f5e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enemyType: 3
+  _explosionPrefab: {fileID: 3099630988076795892, guid: 275d01f12ba96b0468769a7ff3fc8d9d, type: 3}
+  _hitScoreValue: 25
+  _shieldBonusValue: 0
+  _MovementPattern: 0
   _speed: 5
   _dodgeSpeed: 5
   _rammingSpeed: 6
   _enemyLaserPrefab: {fileID: 6920278464217529445, guid: 4c1e783f792ff694d96607932949afa6, type: 3}
   _enemyRearLaserPrefab: {fileID: 0}
-  _MovementPattern: 0
   _IsShieldsActive: 0
   _shields: {fileID: 0}
-  _enemyType: 3
   _detectorPrefab: {fileID: 0}
   _detectionType: 0
 --- !u!61 &3594974243654742548

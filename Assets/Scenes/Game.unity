@@ -876,7 +876,9 @@ MonoBehaviour:
   _enemyAggressorPrefab: {fileID: 2641207057622179745, guid: d06d71c0834625543b6b1ec136893b3d, type: 3}
   _enemyPinkPrefab: {fileID: 3957332095201725550, guid: 888deabcd3a0fab4ea7bc8c35ed029f9, type: 3}
   _enemyBossPrefab: {fileID: 7793502560125116691, guid: 7b08d86277ab79d41a3360c052b1cbd0, type: 3}
-  _enemySpawnRate: 5
+  _currentWave: 0
+  _maxWaves: 5
+  _enemySpawnRate: 5.4
   _enemyContainer: {fileID: 1692080857}
   _powerups:
   - {fileID: 2548850899673707684, guid: 94d5aa2f891f127448ec1630acd11515, type: 3}

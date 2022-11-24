@@ -140,13 +140,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bossLaserPrefab: {fileID: 2722888340653810657, guid: f70624e8910f36e489ff65bb4b5764a3, type: 3}
   _bossHomingMissilePrefab: {fileID: 5407076850980388669, guid: 67ff34dddb0821b40aeb8522964ca762, type: 3}
+  _homingMissileFireRate: 5
   _yStartPosition: 11
   _yStopPosition: 6
   _speed: 2
   _maxBossHealth: 60
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+  _explosionPrefab: {fileID: 3099630988076795892, guid: 275d01f12ba96b0468769a7ff3fc8d9d, type: 3}
   _hitScoreValue: 10
-  _homingMissileFireRate: 5
 --- !u!82 &-3258513427560372201
 AudioSource:
   m_ObjectHideFlags: 0

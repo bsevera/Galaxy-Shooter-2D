@@ -6,6 +6,25 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
+    private EnemyType _enemyType;
+
+    [SerializeField]
+    private GameObject _explosionPrefab;
+
+    
+    [Header("Scoring")]
+    [SerializeField]
+    private int _hitScoreValue;
+
+    [SerializeField]
+    private int _shieldBonusValue;
+
+
+    [Header("Movement")]
+    [SerializeField]
+    private EnemyMovementPattern _MovementPattern;
+
+    [SerializeField]
     private float _speed = 4.0f;
 
     [SerializeField]
@@ -14,21 +33,37 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float _rammingSpeed = 6.0f;
 
+
+    [Header("Laser Prefabs")]
     [SerializeField]
     private GameObject _enemyLaserPrefab;
 
     [SerializeField]
     private GameObject _enemyRearLaserPrefab;
 
+    [Header("Shields")]
+    [SerializeField]
+    private bool _IsShieldsActive = false;
+
+    [SerializeField]
+    private GameObject _shields;
+
+
+    [Header("Detectors")]
+    [SerializeField]
+    private GameObject _detectorPrefab;
+
+    [SerializeField]
+    private DetectionType _detectionType;
+
+
     private float _bottomOfScreen = -5.4f;
     private float _topOfScreen = 6.5f;
     private float _minX = -9.0f;
     private float _maxX = 9.0f;
 
-
     private SpawnManager _spawnManager;
-    private Player _player;
-    private Animator _animator;
+    private Player _player;    
     private bool _enemyIsDestroyed = false;
     private float _fireRate = -1;
     private float _canFire;
@@ -38,26 +73,11 @@ public class Enemy : MonoBehaviour
 
     private AudioSource _audioSource;
 
-    [SerializeField]
-    private EnemyMovementPattern _MovementPattern;
     private float _spawnTime;
     private float _frequency;
     private float _phase;
     private float _distanceY;
 
-    [SerializeField]
-    private bool _IsShieldsActive = false;
-    [SerializeField]
-    private GameObject _shields;
-
-    [SerializeField]
-    private EnemyType _enemyType;
-
-    [SerializeField]
-    private GameObject _detectorPrefab;
-
-    [SerializeField]
-    private DetectionType _detectionType;
     private GameObject _detector;
 
     private void Awake()
@@ -76,8 +96,6 @@ public class Enemy : MonoBehaviour
 
         GetSpawnManagerReference();
 
-        GetAnimatorReferences();
-
         GetAudioSourceReference();
 
         if (_MovementPattern == EnemyMovementPattern.ZigZagDown)
@@ -93,6 +111,7 @@ public class Enemy : MonoBehaviour
             if (UnityEngine.Random.Range(0, 2) == 1)
             {
                 EnableShields();
+                _hitScoreValue += _shieldBonusValue;
             }
         }
 
@@ -190,31 +209,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void GetAnimatorReferences()
-    {
-        if (HasShields())
-        {
-            _animator = GetComponent<Animator>();
-        }
-        else
-        {
-            if (this.gameObject.transform.childCount == 1)
-            {
-                //if game object has a child object holding the sprite, get the animator on that child object
-                _animator = transform.GetChild(0).GetComponent<Animator>();
-            }
-            else
-            {
-                _animator = GetComponent<Animator>();
-            }
-        }
-
-        if (_animator == null)
-        {
-            Debug.LogError("Animator component of enemy object is null");
-        }
-
-    }
     #endregion
 
     #region Shields Methods
@@ -242,7 +236,8 @@ public class Enemy : MonoBehaviour
         }
     }
     #endregion
-    
+
+    #region Movement Methods
     private void CalculateMovement()
     {
         if (_detectionType == DetectionType.PlayerBehind)
@@ -362,6 +357,9 @@ public class Enemy : MonoBehaviour
 
         transform.position = new Vector3(randomX, _topOfScreen, 0);
     }
+    #endregion
+
+    #region Fire Methods
 
     private void FireLaser()
     {
@@ -374,6 +372,8 @@ public class Enemy : MonoBehaviour
         Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.3f, 0);
         GameObject enemyLaser = Instantiate(_enemyRearLaserPrefab, laserStartingPosition, Quaternion.identity);
     }
+
+    #endregion
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -396,12 +396,6 @@ public class Enemy : MonoBehaviour
                 else
                 {
                     _spawnManager.OnEnemyKilled();
-
-                    //set speed to 0 before starting the animation
-                    _speed = 0f;
-
-                    //destroy animation
-                    _animator.SetTrigger("OnEnemyDeath");
 
                     //destroy us
                     DestroyUs();
@@ -440,17 +434,11 @@ public class Enemy : MonoBehaviour
                 //add 10 to score
                 if (_player != null)
                 {
-                    _player.IncreaseScore(10);
+                    _player.IncreaseScore(_hitScoreValue);
                 }
                 _spawnManager.OnEnemyKilled();
 
                 _enemyIsDestroyed = true;
-
-                //set speed to 0 before starting the animation
-                _speed = 0f;
-
-                //destroy animation
-                _animator.SetTrigger("OnEnemyDeath");
 
                 //destroy us
                 DestroyUs();
@@ -491,12 +479,6 @@ public class Enemy : MonoBehaviour
 
             _enemyIsDestroyed = true;
 
-            //set speed to 0 before starting the animation
-            _speed = 0f;
-
-            //destroy animation
-            _animator.SetTrigger("OnEnemyDeath");
-
             //destroy us
             DestroyUs();
         }
@@ -504,10 +486,11 @@ public class Enemy : MonoBehaviour
 
     private void DestroyUs()
     {
+        Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+
         _audioSource.Play();
 
         if (_detectionType != DetectionType.None)
-        //if (_enemyType == EnemyType.Aggressor)
         {
             if (_detector != null)
             {
@@ -518,7 +501,7 @@ public class Enemy : MonoBehaviour
         //fix to not allow destroyed enemy to be hit again        
         Destroy(GetComponent<Collider2D>());
 
-        Destroy(this.gameObject, 2.8f);        
+        Destroy(this.gameObject, 0.25f);        
     }
 
 }
