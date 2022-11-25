@@ -56,12 +56,39 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GetGameManagerReference();
+        GetPlayerReference();
+
+        InitializeUIObjects();
+
+        ApplyLensDistortion();
+    }
+
+    #region Startup References
+
+    private void GetGameManagerReference()
+    {
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         if (_gameManager == null)
         {
-            Debug.LogError("_gameManager is Null");
+            Debug.LogError("UIManager :: GameManager is Null");
+        }
+    }
+
+    private void GetPlayerReference()
+    {
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("UIManager :: Player object is Null");
         }
 
+    }
+
+    #endregion 
+
+    private void InitializeUIObjects()
+    {
         //Ensure game over text is not displaying
         _gameOverText.gameObject.SetActive(false);
 
@@ -71,14 +98,7 @@ public class UIManager : MonoBehaviour
         //set score to 0
         _scoreText.text = "Score: 0";
 
-        //assign text component to the handle
-        _player = GameObject.Find("Player").GetComponent<Player>();
-        if (_player == null)
-        {
-            Debug.Log("Player object is null in UIManager");
-        }
-
-        ApplyLensDistortion();
+        _killsText.text = "Kills: 0 / 0";
     }
 
     public void DisplayWaveText(int wave)
@@ -110,7 +130,7 @@ public class UIManager : MonoBehaviour
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append("Ammo: ");
         sb.Append(currentAmmo.ToString());
-        sb.Append("/");
+        sb.Append(" / ");
         sb.Append(maxAmmo.ToString());
 
         _ammoText.text = sb.ToString();

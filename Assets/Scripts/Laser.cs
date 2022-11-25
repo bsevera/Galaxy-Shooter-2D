@@ -10,22 +10,10 @@ public class Laser : MonoBehaviour
     [SerializeField]
     private LaserDirection _laserDirection;
 
-    //private bool _isEnemyLaser = false;
-
-
     // Update is called once per frame
     void Update()
     {
         MoveLaser();
-
-        //if (_isEnemyLaser)
-        //{
-        //    MoveDown();
-        //}
-        //else
-        //{
-        //    MoveLaser();            
-        //}
 
     }
 
@@ -188,11 +176,6 @@ public class Laser : MonoBehaviour
     {
         _laserDirection = direction;
     }
-
-    //public void AssignEnemyLaser()
-    //{
-    //    //_isEnemyLaser = true;
-    //}
 
     public void StopLaserMovement()
     {

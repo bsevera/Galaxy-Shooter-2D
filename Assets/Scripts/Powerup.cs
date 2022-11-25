@@ -4,28 +4,6 @@ using UnityEngine;
 
 public class Powerup : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject _explosionPrefab;
-
-    [SerializeField]
-    private PowerupRarity _rarity;
-
-    public PowerupRarity Rarity
-    {
-        get { return _rarity; }
-    }
-
-    [SerializeField]
-    private float _speed = 3.0f;
-
-    private float _bottomOfScreen = -5.4f;
-    private float _topOfScreen = 6.5f;
-    private float _minX = -9.0f;
-    private float _maxX = 9.0f;
-
-    [SerializeField]
-    private AudioClip _audioClip;
-
     //ID for powerups
     //0 = triple shot
     //1 = speed
@@ -37,11 +15,42 @@ public class Powerup : MonoBehaviour
     //7 = Homing Missile
 
     [SerializeField]
+    [Min(0)]
     private int powerupID;
 
     [SerializeField]
+    private PowerupRarity _rarity;
+
+    [Header("Movement")]
+    [SerializeField]
+    private float _speed = 3.0f;
+
+    [SerializeField]
     private float _collectionSpeed = 8.0f;
+
+    [Header("Destruction of Object")]
+    [SerializeField]
+    private GameObject _explosionPrefab;
+
+    [Header("Audio")]
+    [SerializeField]
+    private AudioClip _audioClip;
+
+    private float _bottomOfScreen = -5.4f;
+    private float _topOfScreen = 6.5f;
+    private float _minX = -9.0f;
+    private float _maxX = 9.0f;
+
     private Player _player;
+
+    #region Get/Set Properties
+
+    public PowerupRarity Rarity
+    {
+        get { return _rarity; }
+    }
+
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -79,6 +88,8 @@ public class Powerup : MonoBehaviour
         transform.position = new Vector3(randomX, _topOfScreen, 0);
     }
 
+    #region Startup References
+
     private void GetPlayerReference()
     {
         //get a reference to the player object
@@ -88,6 +99,8 @@ public class Powerup : MonoBehaviour
             Debug.LogError("Player object is null");
         }
     }
+
+    #endregion
 
     private void MoveTowardPlayer()
     {

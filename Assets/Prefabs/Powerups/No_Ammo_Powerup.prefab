@@ -146,9 +146,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edb225b102aca034db49f851bd2c4d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _explosionPrefab: {fileID: 7055911523107090400, guid: a010dd1a8e0122547b5aab70ac4faef6, type: 3}
-  _rarity: 2
-  _speed: 3
-  _audioClip: {fileID: 8300000, guid: 90c2ac09ce8b7944286f20e2b15d38fd, type: 3}
   powerupID: 6
+  _rarity: 5
+  _speed: 3
   _collectionSpeed: 8
+  _explosionPrefab: {fileID: 7055911523107090400, guid: a010dd1a8e0122547b5aab70ac4faef6, type: 3}
+  _audioClip: {fileID: 8300000, guid: 90c2ac09ce8b7944286f20e2b15d38fd, type: 3}

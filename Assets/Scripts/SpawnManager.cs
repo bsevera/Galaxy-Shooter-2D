@@ -171,7 +171,6 @@ public class SpawnManager : MonoBehaviour
             }
 
             enemyToSpawn = Random.Range(0, maxRange);
-            //enemyToSpawn = Random.Range(0, _currentWave);
         }
 
         GameObject newEnemy = null;

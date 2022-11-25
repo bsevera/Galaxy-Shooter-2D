@@ -191,7 +191,6 @@ public class BossLaser : MonoBehaviour
 
         while(gameObject.transform.localScale.y < 2.5)
         {
-            //y_scale += 0.2f;
             y_scale += 0.125f;
 
             transform.localScale = new Vector3(0.2f, y_scale, 0.2f);
