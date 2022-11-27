@@ -14,7 +14,6 @@ public class Laser : MonoBehaviour
     void Update()
     {
         MoveLaser();
-
     }
 
     private void MoveLaser()
@@ -55,14 +54,7 @@ public class Laser : MonoBehaviour
         //if position on the Y is less than -4, destroy the object
         if (transform.position.y < -8)
         {
-            if (this.transform.parent != null)
-            {
-                Destroy(this.transform.parent.gameObject);
-            }
-            else
-            {
-                Destroy(this.gameObject);
-            }
+            DestroyMe();
         }
     }
 
@@ -73,19 +65,8 @@ public class Laser : MonoBehaviour
 
         if (transform.position.x < -9 || transform.position.y < -8)
         {
-
-            if (this.transform.parent.gameObject.transform.childCount == 1)
-            {
-                GameObject myParent = this.transform.parent.gameObject;
-                Destroy(myParent);
-            }
-            else
-            {
-                Destroy(this.gameObject);
-            }
-
+            DestroyMe();
         }
-
     }
 
     private void MoveDownRight()
@@ -95,16 +76,7 @@ public class Laser : MonoBehaviour
 
         if (transform.position.x > 9 || transform.position.y < -8) 
         {
-            
-            if (this.transform.parent.gameObject.transform.childCount == 1)
-            {
-                GameObject myParent = this.transform.parent.gameObject;
-                Destroy(myParent);
-            }
-            else
-            {
-                Destroy(this.gameObject);
-            }
+            DestroyMe();
         }
     }
 
@@ -113,7 +85,7 @@ public class Laser : MonoBehaviour
         transform.Translate(Vector3.left * _speed * Time.deltaTime, Space.World);
         if (transform.position.x < -9)
         {
-            Destroy(this.gameObject);
+            DestroyMe();
         }
     }
 
@@ -124,7 +96,7 @@ public class Laser : MonoBehaviour
 
         if (transform.position.x < -9 || transform.position.y > 9)
         {
-            Destroy(this.gameObject);
+            DestroyMe();
         }
     }
 
@@ -136,14 +108,7 @@ public class Laser : MonoBehaviour
         //if position on the Y is greater than 8, destroy the object
         if (transform.position.y > 8f)
         {
-            if (this.transform.parent != null)
-            {
-                Destroy(this.transform.parent.gameObject);
-            }
-            else
-            {
-                Destroy(this.gameObject);
-            }
+            DestroyMe();
         }
     }
 
@@ -154,7 +119,7 @@ public class Laser : MonoBehaviour
 
         if (transform.position.x > 9 || transform.position.y > 9)
         {
-            Destroy(this.gameObject);
+            DestroyMe();
         }
     }
 
@@ -162,6 +127,18 @@ public class Laser : MonoBehaviour
     {
         transform.Translate(Vector3.right * _speed * Time.deltaTime, Space.World);
         if (transform.position.x > 9)
+        {
+            DestroyMe();
+        }
+    }
+
+    private void DestroyMe()
+    {
+        if (this.transform.parent != null && this.transform.parent.childCount == 1)
+        {
+            Destroy(this.transform.parent.gameObject);
+        }
+        else
         {
             Destroy(this.gameObject);
         }
