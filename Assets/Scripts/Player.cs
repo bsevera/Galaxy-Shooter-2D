@@ -3,70 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
-{    
-
+{
+    [Header("General")]
     [SerializeField]
     private float _speed = 5f;
-
-    [SerializeField]
-    private float _maxThrusterValue = 100f;
-    [SerializeField]
-    private float _currentThrusterValue;
-
-    [SerializeField]
-    private float _thrusterMultiplier = 1.5f;
-
-    [SerializeField]
-    private float _speedMultiplier = 2.0f;
-
-    [SerializeField]
-    private GameObject _laserPrefab;
-
-    [SerializeField]
-    private GameObject _tripleShotPrefab;
-
-    [SerializeField]
-    private GameObject _homingMissilePrefab;
-
-    [SerializeField]
-    private GameObject _blossomLaserPrefab;
-
-    [SerializeField]
-    private bool _isTripleShotActive = false;
-
-    [SerializeField]
-    private bool _isBlossomLaserActive = false;
-
-    [SerializeField]
-    private bool _IsShieldsActive = false;
-    private int _shieldHealth = 0;
-    private int _shieldHealthMax = 3;
-
-    [SerializeField]
-    private float _fireRate = 0.15f;
-
-    //cool down system for limiting how quickly the player can fire
-    private float _canFire = -1f;
 
     [SerializeField]
     private int _lives = 3;
 
     [SerializeField]
-    private float _tripleShotActiveLengthOfTime = 5.0f;
+    private float _fireRate = 0.15f;
 
     [SerializeField]
-    private float _blossomLaserActiveLengthOfTime = 5.0f;
+    private int _score = 0;
 
     [SerializeField]
-    private float _speedActiveLengthOfTime = 5.0f;
-
-    [SerializeField]    
-    private GameObject _shields;
+    private int _maxAmmo = 30;
 
     [SerializeField]
-    private GameObject _thrusters;
-    private bool _speedBoostIsActive = false;
+    private GameObject _laserPrefab;
 
+
+
+    [Space(10)]
+    [Header("Player Damage")]
     [SerializeField]
     private GameObject _leftEngine;
 
@@ -76,6 +36,83 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _explosionPrefab;
 
+
+
+    [Space(10)]
+    [Header("Thrusters")]
+    [SerializeField]
+    private GameObject _thrusters;
+
+    [SerializeField]
+    private float _maxThrusterValue = 100f;
+
+    [SerializeField]
+    private float _currentThrusterValue;
+
+    [SerializeField]
+    private float _thrusterMultiplier = 1.5f;
+
+
+
+    [Space(10)]
+    [Header("Speed Boost Powerup")]
+    [SerializeField]
+    private float _speedMultiplier = 2.0f;
+
+    [SerializeField]
+    private float _speedActiveLengthOfTime = 5.0f;
+
+    [SerializeField]
+    private bool _speedBoostIsActive = false;
+
+
+
+    [Space(10)]
+    [Header("Shields Powerup")]
+    [SerializeField]
+    private GameObject _shields;
+
+    [SerializeField]
+    private bool _IsShieldsActive = false;
+
+
+
+    [Space(10)]
+    [Header("Tripleshot Powerup")]
+    [SerializeField]
+    private GameObject _tripleShotPrefab;
+
+    [SerializeField]
+    private bool _isTripleShotActive = false;
+
+    [SerializeField]
+    private float _tripleShotActiveLengthOfTime = 5.0f;
+
+
+
+    [Space(10)]
+    [Header("Blossom Laser Powerup")]
+    [SerializeField]
+    private GameObject _blossomLaserPrefab;
+
+    [SerializeField]
+    private bool _isBlossomLaserActive = false;
+
+    [SerializeField]
+    [Tooltip("Blossom laser active length of time")]
+    private float _blossomLaserActiveLengthOfTime = 5.0f;
+
+
+
+    [Space(10)]
+    [Header("Homing Missile Powerup")]
+    [SerializeField]
+    private GameObject _homingMissilePrefab;
+
+
+
+    [Space(10)]
+    [Header("Audio Clips")]
     [SerializeField]
     private AudioClip _explosionClip;
 
@@ -94,16 +131,17 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _loseAllAmmoClip;
 
+
+    private int _shieldHealth = 0;
+    private int _shieldHealthMax = 3;
+
+    //cool down system for limiting how quickly the player can fire
+    private float _canFire = -1f;
+
     private AudioSource _AudioSource;
 
-    private SpawnManager _spawnManager;
-    //private int _wave = 0;
+    private SpawnManager _spawnManager;    
 
-    [SerializeField]
-    private int _score = 0;
-
-    [SerializeField]
-    private int _maxAmmo = 30;
     private int _currentAmmo;
 
     private int _homingMissileCount = 0;    
