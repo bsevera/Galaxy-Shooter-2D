@@ -79,6 +79,8 @@ public class Enemy : MonoBehaviour
     private float _distanceY;
 
     private GameObject _detector;
+    private bool _avoidingLaser = false;
+    private DodgeDirection _dodgeDirection;
 
     private void Awake()
     {
@@ -255,8 +257,13 @@ public class Enemy : MonoBehaviour
                 //move detector object with the enemy
                 _detector.transform.position = transform.position;
                 if (_detector.GetComponent<Detection>().LaserDetected)
-                {                    
+                {
                     AvoidLaser();
+                    _avoidingLaser = true;
+                }
+                else
+                {
+                    _avoidingLaser = false;
                 }
             }
         }
@@ -278,10 +285,26 @@ public class Enemy : MonoBehaviour
 
     private void AvoidLaser()
     {
-        //randomly decide the direction to move
-        int direction = UnityEngine.Random.Range(0, 2);
+        DodgeDirection direction;
 
-        if (direction == 0)
+        if (_avoidingLaser)
+        {
+            direction = _dodgeDirection;
+        }
+        else
+        {
+            if (UnityEngine.Random.Range(0, 2) == 0)
+            {
+                direction = DodgeDirection.Left;
+            }
+            else
+            {
+                direction = DodgeDirection.Right;
+            }
+            _dodgeDirection = direction;
+        }
+        
+        if (direction == DodgeDirection.Left)
         {
             //move left
             transform.Translate(Vector3.left * _dodgeSpeed * Time.deltaTime);
