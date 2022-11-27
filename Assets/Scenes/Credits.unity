@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -535,10 +535,6 @@ MonoBehaviour:
   m_text: 'Developed By
 
 
-    Play Testers
-
-
-
     Graphics
 
 
@@ -547,8 +543,7 @@ MonoBehaviour:
     Background Music
 
 
-    Sound
-    Effects
+    Sound Effects
 
 
 
@@ -558,10 +553,8 @@ MonoBehaviour:
 
 
 
-    Studio Logo
-
-
-    Special Thanks'
+    Special
+    Thanks'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
   m_sharedMaterial: {fileID: -5910980090658720634, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
@@ -766,11 +759,6 @@ MonoBehaviour:
   m_text: 'Brian Severa
 
 
-    Kyle Severa
-
-    Adam Severa
-
-
     Al Heck & GameDevHQ
 
     Prinsu-Kun
@@ -799,16 +787,12 @@ MonoBehaviour:
     Timbre
 
 
-    Addison
-    "Charlie" Clinefelter
-
-
-    Amy Liethen-Severa
+    Amy
+    Liethen-Severa
 
     Thomas Kessler
 
-    Jonathan
-    Weinberger'
+    Jonathan Weinberger'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
   m_sharedMaterial: {fileID: -5910980090658720634, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
