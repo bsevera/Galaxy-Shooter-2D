@@ -413,7 +413,7 @@ public class Enemy : MonoBehaviour
             }
 
             //destroy laser
-            if (other.transform.parent != null)
+            if (other.transform.parent != null && other.transform.parent.childCount == 1)
             {
                 //triple shot - destroy parent
                 Destroy(other.transform.parent.gameObject);
