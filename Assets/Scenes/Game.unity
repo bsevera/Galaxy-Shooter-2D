@@ -1286,6 +1286,7 @@ MonoBehaviour:
   _laserPrefab: {fileID: 952446013181055893, guid: 451f78b20ae970b4983c8d97583f2ff0, type: 3}
   _tripleShotPrefab: {fileID: 1918948169833142805, guid: 4374afa55ec7b4e4189697eb6d8f9a76, type: 3}
   _homingMissilePrefab: {fileID: 3655688820478506084, guid: 94ceffb917d42d54a96150e0b2536030, type: 3}
+  _blossomLaserPrefab: {fileID: 7224301599111588744, guid: 213583951c2b735429c3c6990704cffd, type: 3}
   _isTripleShotActive: 0
   _isBlossomLaserActive: 0
   _IsShieldsActive: 0

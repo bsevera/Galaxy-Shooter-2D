@@ -29,6 +29,9 @@ public class Player : MonoBehaviour
     private GameObject _homingMissilePrefab;
 
     [SerializeField]
+    private GameObject _blossomLaserPrefab;
+
+    [SerializeField]
     private bool _isTripleShotActive = false;
 
     [SerializeField]
@@ -481,14 +484,17 @@ public class Player : MonoBehaviour
 
         if (_isTripleShotActive)
         {
+            //fire triple shot
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
         }
         else if (_isBlossomLaserActive) 
         {
-            FireBlossomLaser();
+            //fire blossom laser   
+            Instantiate(_blossomLaserPrefab, transform.position, Quaternion.identity);
         }
         else
         {
+            //fire standard laser
             Vector3 laserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
             Instantiate(_laserPrefab, laserStartingPosition, Quaternion.identity);
 
@@ -507,49 +513,6 @@ public class Player : MonoBehaviour
         Instantiate(_homingMissilePrefab, transform.position, Quaternion.identity);
         _homingMissileCount -= 1;
         UpdateHomingMissileUI();
-    }
-
-    private void FireBlossomLaser()
-    {
-        //five lasers shoot in different directions
-        
-        //left laser
-        GameObject leftLaser = Instantiate(_laserPrefab);
-        leftLaser.GetComponent<Laser>().SetDirection(LaserDirection.Left);
-        Vector3 leftLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
-        leftLaser.transform.position = leftLaserStartingPosition;
-        leftLaser.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 90));
-
-        //left upper laser
-        GameObject upperLeftLaser = Instantiate(_laserPrefab);
-        upperLeftLaser.GetComponent<Laser>().SetDirection(LaserDirection.UpperLeft);
-        Vector3 upperLeftLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
-        upperLeftLaser.transform.position = upperLeftLaserStartingPosition;
-        upperLeftLaser.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 45));
-
-        //center laser
-        GameObject centerLaser = Instantiate(_laserPrefab);
-        centerLaser.GetComponent<Laser>().SetDirection(LaserDirection.Up);
-        Vector3 centerLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
-        centerLaser.transform.position = centerLaserStartingPosition;
-
-        //right upper laser
-        GameObject upperRightLaser = Instantiate(_laserPrefab);
-        upperRightLaser.GetComponent<Laser>().SetDirection(LaserDirection.UpperRight);
-        Vector3 upperRightLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
-        upperRightLaser.transform.position = upperLeftLaserStartingPosition;
-        upperRightLaser.transform.rotation = Quaternion.Euler(new Vector3(0, 0, -45));
-
-
-        //right laser
-        GameObject rightLaser = Instantiate(_laserPrefab);
-        rightLaser.GetComponent<Laser>().SetDirection(LaserDirection.Right);
-        Vector3 rightLaserStartingPosition = new Vector3(transform.position.x, transform.position.y + 1.05f, 0);
-        rightLaser.transform.position = rightLaserStartingPosition;
-        rightLaser.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 90));
-
-        _AudioSource.clip = _laserShotAudioClip;
-        _AudioSource.Play();
     }
 
 
