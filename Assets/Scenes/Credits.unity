@@ -540,10 +540,14 @@ MonoBehaviour:
 
 
 
+    Fonts
+
+
     Background Music
 
 
-    Sound Effects
+    Sound
+    Effects
 
 
 
@@ -553,8 +557,7 @@ MonoBehaviour:
 
 
 
-    Special
-    Thanks'
+    Special Thanks'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
   m_sharedMaterial: {fileID: -5910980090658720634, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
@@ -766,15 +769,19 @@ MonoBehaviour:
     OS-Prime
 
 
-    GameDevHQ
+    John
+    Farmer
 
 
     GameDevHQ
 
-    Keith
-    W. Blackwell
 
-    Mattias Michael Lahoud
+    GameDevHQ
+
+    Keith W. Blackwell
+
+    Mattias Michael
+    Lahoud
 
     Sasha Gordon Greene
 
