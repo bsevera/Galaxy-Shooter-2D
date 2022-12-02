@@ -29,6 +29,11 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("Controls");
     }
 
+    public void LoadScoring()
+    {
+        SceneManager.LoadScene("Scoring");
+    }
+
     public void QuitGame()
     {
         Application.Quit();
