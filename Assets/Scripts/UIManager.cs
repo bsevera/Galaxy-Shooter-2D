@@ -47,6 +47,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Slider _bossHealthGauge;
 
+    [SerializeField]
+    private GameObject _pauseMenu;
+
     private GameManager _gameManager;
 
     private PostProcessVolume _postProcessVolume;
@@ -288,6 +291,25 @@ public class UIManager : MonoBehaviour
             _bossHealthGauge.fillRect.gameObject.SetActive(false);
             YouWin();
         }
+    }
+    #endregion
+
+    #region Pause and Resume
+
+    public void PauseGame()
+    {
+        _pauseMenu.SetActive(true);
+    }
+
+    public void ResumeGame()
+    {
+        _gameManager.ResumeGame();
+        _pauseMenu.SetActive(false);
+    }
+
+    public void QuitGame()
+    {
+        _gameManager.QuitGame();
     }
     #endregion
 }
