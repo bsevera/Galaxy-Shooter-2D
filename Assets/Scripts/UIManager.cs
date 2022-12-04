@@ -50,6 +50,12 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject _pauseMenu;
 
+    [SerializeField]
+    private int _resumeCountdownFrom;
+
+    [SerializeField]
+    private TMP_Text _resumeCountdownText;
+
     private GameManager _gameManager;
 
     private PostProcessVolume _postProcessVolume;
@@ -303,13 +309,32 @@ public class UIManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        _gameManager.ResumeGame();
         _pauseMenu.SetActive(false);
+        StartCoroutine(ResumeCountdown());
     }
 
     public void QuitGame()
     {
         _gameManager.QuitGame();
+    }
+
+    IEnumerator ResumeCountdown()
+    {
+        int tmpCountdown = _resumeCountdownFrom + 1;
+
+        while (tmpCountdown > 0)
+        {
+            tmpCountdown--;
+            _resumeCountdownText.text = tmpCountdown.ToString();
+            _resumeCountdownText.gameObject.SetActive(true);
+
+            yield return new WaitForSecondsRealtime(1.0f);
+
+        }
+
+        _resumeCountdownText.gameObject.SetActive(false);
+        _gameManager.ResumeGame();
+
     }
     #endregion
 }
