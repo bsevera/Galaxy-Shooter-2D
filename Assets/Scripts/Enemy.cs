@@ -456,8 +456,6 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                //DisableCollider();
-
                 //add 10 to score
                 if (_player != null)
                 {
@@ -511,13 +509,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    //private void DisableCollider()
-    //{
-    //    Collider2D collider = GetComponent<Collider2D>();
-
-    //    Destroy(collider);
-    //}
-
     private void DestroyUs()
     {
         Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
@@ -532,11 +523,8 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        Debug.Log("Enemy :: DestroyUs");
         //fix to not allow destroyed enemy to be hit again        
         Destroy(GetComponent<Collider2D>());
-
-        Debug.Log("Enemy :: DestroyUs :: Collider Destroyed");
 
         Destroy(this.gameObject, 0.25f);        
     }
