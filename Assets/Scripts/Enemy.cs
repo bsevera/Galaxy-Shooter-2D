@@ -418,6 +418,8 @@ public class Enemy : MonoBehaviour
                 }
                 else
                 {
+                    //DisableCollider();
+
                     _spawnManager.OnEnemyKilled();
 
                     //destroy us
@@ -454,6 +456,8 @@ public class Enemy : MonoBehaviour
             }
             else
             {
+                //DisableCollider();
+
                 //add 10 to score
                 if (_player != null)
                 {
@@ -496,7 +500,7 @@ public class Enemy : MonoBehaviour
             //add 10 to score
             if (_player != null)
             {
-                _player.IncreaseScore(10);
+                _player.IncreaseScore(_hitScoreValue);
             }
             _spawnManager.OnEnemyKilled();
 
@@ -506,6 +510,13 @@ public class Enemy : MonoBehaviour
             DestroyUs();
         }
     }
+
+    //private void DisableCollider()
+    //{
+    //    Collider2D collider = GetComponent<Collider2D>();
+
+    //    Destroy(collider);
+    //}
 
     private void DestroyUs()
     {
@@ -521,8 +532,11 @@ public class Enemy : MonoBehaviour
             }
         }
 
+        Debug.Log("Enemy :: DestroyUs");
         //fix to not allow destroyed enemy to be hit again        
         Destroy(GetComponent<Collider2D>());
+
+        Debug.Log("Enemy :: DestroyUs :: Collider Destroyed");
 
         Destroy(this.gameObject, 0.25f);        
     }
