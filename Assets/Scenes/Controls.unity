@@ -1145,7 +1145,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &929875399
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1773,7 +1773,9 @@ MonoBehaviour:
     Fire Homing
     Missile
 
-    Thrusters'
+    Thrusters
+
+    Pause Game'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
   m_sharedMaterial: {fileID: -5910980090658720634, guid: b12601656791bb349b1752237e9ca3cb, type: 2}
