@@ -320,13 +320,14 @@ public class UIManager : MonoBehaviour
 
     IEnumerator ResumeCountdown()
     {
-        int tmpCountdown = _resumeCountdownFrom + 1;
+        int tmpCountdown = _resumeCountdownFrom;
 
         while (tmpCountdown > 0)
         {
-            tmpCountdown--;
             _resumeCountdownText.text = tmpCountdown.ToString();
             _resumeCountdownText.gameObject.SetActive(true);
+
+            tmpCountdown--;
 
             yield return new WaitForSecondsRealtime(1.0f);
 
